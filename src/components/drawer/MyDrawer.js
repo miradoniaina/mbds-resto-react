@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -18,6 +19,11 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import HomeRounded from '@material-ui/icons/HomeRounded';
+import Logout from '@material-ui/icons/AccessibilityOutlined';
+
+import Restaurants from '../restaurants/Restaurants';
+import Login from '../authentification/Login';
 
 const drawerWidth = 240;
 
@@ -83,6 +89,17 @@ class PersistentDrawerRight extends React.Component {
     open: false,
   };
 
+  accueil = () => {
+    ReactDOM.render(<Restaurants />, document.getElementById('main'));
+    this.handleDrawerClose();
+  }
+
+  deconnexion = () => {
+    this.handleDrawerClose();
+    ReactDOM.render(<Login />, document.getElementById('root'));
+  }
+
+
   handleDrawerOpen = () => {
     this.setState({ open: true });
   };
@@ -114,20 +131,20 @@ class PersistentDrawerRight extends React.Component {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6" color="inherit" noWrap>
-                MBDS Restaurants 
+              MBDS Restaurants
             </Typography>
           </Toolbar>
         </AppBar>
-        
+
         <main
           className={classNames(classes.content, {
             [classes.contentShift]: open,
           })}
         >
-          <div  className={classes.drawerHeader} />
-            <div id="main">
-
-            </div>
+          <div className={classes.drawerHeader} />
+          <div id="main">
+            <Restaurants />
+          </div>
         </main>
         <Drawer
           className={classes.drawer}
@@ -145,7 +162,11 @@ class PersistentDrawerRight extends React.Component {
           </div>
           <Divider />
           <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+            <ListItem button onClick={this.accueil} key={'accueil'}>
+              <ListItemIcon><HomeRounded /></ListItemIcon>
+              <ListItemText primary={'Accueil'} />
+            </ListItem>
+            {[].map((text, index) => (
               <ListItem button key={text}>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={text} />
@@ -154,7 +175,12 @@ class PersistentDrawerRight extends React.Component {
           </List>
           <Divider />
           <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
+            <ListItem button onClick={this.deconnexion} key={"Deconnexion"}>
+              <ListItemIcon><Logout/></ListItemIcon>
+              <ListItemText primary={"Deconnexion"} />
+            </ListItem>
+
+            {[].map((text, index) => (
               <ListItem button key={text}>
                 <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                 <ListItemText primary={text} />
