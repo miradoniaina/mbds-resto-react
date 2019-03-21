@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
+import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
+import CssBaseline from '@material-ui/core/CssBaseline';
+import FormControl from '@material-ui/core/FormControl';
+import TextField from '@material-ui/core/TextField';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { withStyles } from '@material-ui/core/styles';
+import withStyles from '@material-ui/core/styles/withStyles';
+import Grid from '@material-ui/core/Grid';
 
 import Fab from '@material-ui/core/Fab';
 import Inscription from './Inscription';
@@ -13,28 +18,35 @@ import MyDrawer from '../drawer/MyDrawer';
 
 
 const styles = theme => ({
-    root: {
-        marginTop: 100,
-        flexGrow: 1,
+    main: {
+        width: 'auto',
+        display: 'block', // Fix IE 11 issue.
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+        [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+            width: 400,
+            marginLeft: 'auto',
+            marginRight: 'auto',
+        },
     },
-    container: {
+    paper: {
+        marginTop: theme.spacing.unit * 8,
         display: 'flex',
-        flexWrap: 'wrap',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
     },
-    textField: {
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+    avatar: {
+        margin: theme.spacing.unit,
+        backgroundColor: theme.palette.secondary.main,
     },
-    dense: {
-        marginTop: 16,
+    form: {
+        width: '100%', // Fix IE 11 issue.
+        marginTop: theme.spacing.unit,
     },
-    menu: {
-        width: 200,
+    submit: {
+        marginTop: theme.spacing.unit * 3,
     },
-
-    button: {
-        marginTop: 30,
-    }
 });
 
 
@@ -81,34 +93,33 @@ class Login extends Component {
         const { classes } = this.props;
 
         return (
-            <div className={classes.root}>
-                <Grid
-                    container
-                    justify="center"
-                >
-                    <Typography variant="h1" gutterBottom align="center">
-                        Login
-                    </Typography>
-                </Grid>
-                <Grid
-                    container
-                    justify="center"
-                >
-                    <form className={classes.container} noValidate autoComplete="off">
-                        <TextField
-                            id="outlined-email-input"
-                            label="Email"
-                            className={classes.textField}
-                            type="email"
-                            placeholder="wyz@yahoo.fr"
-                            style={{ margin: 8 }}
-                            name="email"
-                            fullWidth
-                            autoComplete="email"
-                            margin="normal"
-                            variant="outlined"
-                        />
-                        <TextField
+            <main className={classes.main}>
+                <CssBaseline />
+                <Paper className={classes.paper}>
+                    <Avatar className={classes.avatar}>
+                        <LockOutlinedIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
+                        Authentification
+                </Typography>
+                    <form className={classes.form}>
+                        <FormControl margin="normal" required fullWidth>
+                            <TextField
+                                id="outlined-email-input"
+                                label="Email"
+                                className={classes.textField}
+                                type="email"
+                                placeholder="wyz@yahoo.fr"
+                                style={{ margin: 8 }}
+                                name="email"
+                                fullWidth
+                                autoComplete="email"
+                                margin="normal"
+                                variant="outlined"
+                            />
+                        </FormControl>
+                        <FormControl margin="normal" required fullWidth>
+                            <TextField
                             id="outlined-password-input"
                             label="Password"
                             className={classes.textField}
@@ -119,8 +130,12 @@ class Login extends Component {
                             margin="normal"
                             variant="outlined"
                         />
-
-                        <Grid className={classes.button}>
+                        </FormControl>
+                        {/* <FormControlLabel
+                            control={<Checkbox value="remember" color="primary" />}
+                            label="Remember me"
+                        /> */}
+                        <Grid className={classes.submit}>
                             <Fab size="large" onClick={this.login} variant="extended" color="primary">
                                 Se connecter
                             </Fab>
@@ -129,9 +144,8 @@ class Login extends Component {
                             </Button>
                         </Grid>
                     </form>
-                </Grid>
-            </div>
-
+                </Paper>
+            </main>
         );
     }
 }

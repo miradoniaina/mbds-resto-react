@@ -1,0 +1,42 @@
+.left {
+    background-color: #8894D5; 
+    opacity: 0.8;
+    filter: alpha(opacity=60);
+    padding-top: 5%;
+}
+
+#right{
+    background-color: #8894D5; 
+    opacity: 0.8;
+    filter: alpha(opacity=60);
+}
+
+.menu {
+    margin-top: 20px;
+    /* border: 1px solid rgb(61, 82, 206); */
+    background-color: rgb(224, 227, 240);
+}
+
+#resto{
+    margin-top: 10%;
+}
+
+#descr{
+    margin-top: 10%;
+}
+
+#menucarte{
+    margin-top: 15%;
+}
+
+#adresse{
+    margin-top: -25px;
+}
+
+#tel{
+    margin-top: 15%;
+}
+
+#email{
+    margin-top: 15%;
+}

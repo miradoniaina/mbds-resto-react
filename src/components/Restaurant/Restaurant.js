@@ -10,6 +10,8 @@ import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import tileData from '../../tileData';
 
+import './Restaurant.css';
+
 const styles = theme => ({
     listTitle: {
         width: "20%",
@@ -18,7 +20,7 @@ const styles = theme => ({
     },
     link: {
         margin: theme.spacing.unit,
-    },
+    }
 });
 
 
@@ -29,8 +31,8 @@ function Restaurant(props) {
 
         <GridListTile key={props.key} className={classes.listTitle}>
             <Link onClick={() => props.details()} >
-                <img src={props.photo} alt={props.nom} />
-                {/* <img src={tileData[4].img} alt={tileData[4].img} /> */}
+                {/* <img src={props.photo} alt={props.nom} /> */}
+                <img className="img" src={tileData[4].img} alt={tileData[4].img} />
             </Link>
             <GridListTileBar
                 title={props.nom}
