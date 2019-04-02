@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
@@ -11,8 +10,8 @@ import Typography from '@material-ui/core/Typography';
 import base from '../../base';
 
 import Restaurant from '../Restaurant/Restaurant.js';
-import DetailRestaurant from '../detail_restaurant/DetailRestaurant.js';
-
+import { Redirect } from "react-router-dom";
+import MyDrawer from '../drawer/MyDrawer';
 
 
 
@@ -20,34 +19,59 @@ const styles = theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
-    justifyContent: 'space-around',
+    justifyContent: 'center',
     overflow: 'hidden',
     backgroundColor: theme.palette.background.paper,
+    marginLeft: 60,
   },
   gridList: {
+    // justifyContent: 'center',
     // width: 2000,
     // height: 450,
   },
-
 });
 
 
 class Restaurants extends Component {
-
   constructor(props) {
     super(props);
     // déclarer un état...
     this.state = {
       restaurants: {
         'restaurants-0': {},
-      }
+      },
+      goToDetail: false,
+      key : ""
     };
 
   }
 
-  details(){
-    console.log("details");
-    ReactDOM.render(<DetailRestaurant />, document.getElementById('main'));
+  goToDetail = () => {
+    this.setState({
+      goToDetail: true
+    });
+
+  }
+
+  isGoingToDetail = () => {
+    
+    if (this.state.goToDetail) {
+      // this.handleDrawerClose();
+
+      let redirect = "/restaurants/"+this.state.key.split('-')[1];
+
+      console.log(redirect);
+
+      return <Redirect to={redirect} />
+    }
+  }
+
+  details(cle) {
+
+    this.setState({
+      goToDetail: true,
+      key: cle
+    });
   }
 
   componentWillMount() {
@@ -56,7 +80,6 @@ class Restaurants extends Component {
       context: this,
       state: "restaurants"
     });
-
   }
 
   componentWillUnmount() {
@@ -67,16 +90,16 @@ class Restaurants extends Component {
 
   // méthodes
   render() {
-
     const { classes } = this.props;
 
     let restaurants = Object.keys(this.state.restaurants).map((key, index) => {
       let el = this.state.restaurants[key];
-
       return (
         <Restaurant
           key={key}
+          cle={key}
           nom={el.nom}
+          description={el.description}
           photo={el.photo}
           adresse={el.adresse}
           telephone={el.telephone}
@@ -86,23 +109,25 @@ class Restaurants extends Component {
       )
     });
 
-    return (
 
-      <div>
-        <Typography variant="h2" gutterBottom align="center">
-          Nos Restaurants
-            </Typography>
-        <div className={classes.root}>
-
-          <GridList className={classes.gridList} cols={5}>
-            <GridListTile key="Subheader" cols={5} style={{ height: 'auto' }}>
-              <ListSubheader component="div"></ListSubheader>
-            </GridListTile>
-            {restaurants}
-          </GridList>
-        </div>
-
+    let main = <div>
+      {this.isGoingToDetail()}
+      <Typography variant="h2" gutterBottom align="center">
+        Nos Restaurants
+        </Typography>
+      <div className={classes.root}>
+        <GridList className={classes.gridList} cols={5}>
+          <GridListTile key="Subheader" cols={5} style={{ height: 'auto' }}>
+            <ListSubheader component="div"></ListSubheader>
+          </GridListTile>
+          {restaurants}
+        </GridList>
       </div>
+    </div>;
+
+
+    return (
+      <MyDrawer main={main} />
     );
   }
 }
@@ -111,6 +136,5 @@ class Restaurants extends Component {
 Restaurants.propTypes = {
   classes: PropTypes.object.isRequired,
 };
-
 
 export default withStyles(styles)(Restaurants);

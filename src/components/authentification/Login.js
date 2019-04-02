@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -13,8 +12,8 @@ import withStyles from '@material-ui/core/styles/withStyles';
 import Grid from '@material-ui/core/Grid';
 
 import Fab from '@material-ui/core/Fab';
-import Inscription from './Inscription';
-import MyDrawer from '../drawer/MyDrawer';
+import { Redirect } from "react-router-dom";
+
 
 
 const styles = theme => ({
@@ -54,37 +53,29 @@ class Login extends Component {
 
     constructor(props) {
         super(props);
-        // déclarer un état...
 
         this.state = {
-            //   restaurants: {
-            //     'restaurants-0': {},
-            //   }
+            goInscription: false,
+            isLoggedIn: false
         };
     }
 
-
     sinscrire = () => {
-        ReactDOM.render(<Inscription />, document.getElementById('root'));
+        this.setState({
+            goInscription: true
+        });
     }
 
     login = () => {
-        ReactDOM.render(<MyDrawer />, document.getElementById('root'));
-        // ReactDOM.render(<Restaurants />, document.getElementById('main'));
+        this.setState({
+            isLoggedIn: true
+        });
     }
 
-    componentWillMount() {
-        console.log("Will mount")
-        // this.ref = base.syncState("restaurants", {
-        //   context: this,
-        //   state: "restaurants"
-        // });
-
-    }
-
-    componentWillUnmount() {
-        console.log("Will unmount")
-        // base.removeBinding(this.ref);
+    renderRedirect = () => {
+        if (this.state.isLoggedIn) {
+            return <Redirect to='/restaurants' />
+        }
     }
 
 
@@ -93,59 +84,65 @@ class Login extends Component {
         const { classes } = this.props;
 
         return (
-            <main className={classes.main}>
-                <CssBaseline />
-                <Paper className={classes.paper}>
-                    <Avatar className={classes.avatar}>
-                        <LockOutlinedIcon />
-                    </Avatar>
-                    <Typography component="h1" variant="h5">
-                        Authentification
-                </Typography>
-                    <form className={classes.form}>
-                        <FormControl margin="normal" required fullWidth>
-                            <TextField
-                                id="outlined-email-input"
-                                label="Email"
-                                className={classes.textField}
-                                type="email"
-                                placeholder="wyz@yahoo.fr"
-                                style={{ margin: 8 }}
-                                name="email"
-                                fullWidth
-                                autoComplete="email"
-                                margin="normal"
-                                variant="outlined"
-                            />
-                        </FormControl>
-                        <FormControl margin="normal" required fullWidth>
-                            <TextField
-                            id="outlined-password-input"
-                            label="Password"
-                            className={classes.textField}
-                            style={{ margin: 8 }}
-                            type="password"
-                            autoComplete="current-password"
-                            fullWidth
-                            margin="normal"
-                            variant="outlined"
-                        />
-                        </FormControl>
-                        {/* <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        /> */}
-                        <Grid className={classes.submit}>
-                            <Fab size="large" onClick={this.login} variant="extended" color="primary">
-                                Se connecter
-                            </Fab>
-                            <Button onClick={this.sinscrire} variant="text" color="primary">
-                                S'inscrire
-                            </Button>
-                        </Grid>
-                    </form>
-                </Paper>
-            </main>
+            <div>
+                {this.renderRedirect()}
+                {!this.state.goInscription ? (
+                    <main className={classes.main}>
+                        <CssBaseline />
+                        <Paper className={classes.paper}>
+                            <Avatar className={classes.avatar}>
+                                <LockOutlinedIcon />
+                            </Avatar>
+                            <Typography component="h1" variant="h5">
+                                Authentification
+                                </Typography>
+                            <form className={classes.form}>
+                                <FormControl margin="normal" required fullWidth>
+                                    <TextField
+                                        id="outlined-email-input"
+                                        label="Email"
+                                        className={classes.textField}
+                                        type="email"
+                                        placeholder="wyz@yahoo.fr"
+                                        style={{ margin: 8 }}
+                                        name="email"
+                                        fullWidth
+                                        autoComplete="email"
+                                        margin="normal"
+                                        variant="outlined"
+                                    />
+                                </FormControl>
+                                <FormControl margin="normal" required fullWidth>
+                                    <TextField
+                                        id="outlined-password-input"
+                                        label="Password"
+                                        className={classes.textField}
+                                        style={{ margin: 8 }}
+                                        type="password"
+                                        autoComplete="current-password"
+                                        fullWidth
+                                        margin="normal"
+                                        variant="outlined"
+                                    />
+                                </FormControl>
+                                {/* <FormControlLabel
+                                            control={<Checkbox value="remember" color="primary" />}
+                                            label="Remember me"
+                                        /> */}
+                                <Grid className={classes.submit}>
+                                    <Fab size="large" onClick={this.login} variant="extended" color="primary">
+                                        Se connecter
+                                            </Fab>
+                                    <Button variant="text" onClick={this.sinscrire} color="primary">
+                                        S'inscrire
+                                            </Button>
+                                </Grid>
+                            </form>
+                        </Paper>
+                    </main>
+                ) : (<Redirect to="/inscription" />)
+                }
+            </div>
         );
     }
 }

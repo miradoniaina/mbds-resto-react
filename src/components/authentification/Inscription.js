@@ -6,12 +6,11 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import Fab from '@material-ui/core/Fab';
-import Login from './Login';
-import ReactDOM from 'react-dom';
 
 import Paper from '@material-ui/core/Paper';
 import FormControl from '@material-ui/core/FormControl';
 import CssBaseline from '@material-ui/core/CssBaseline';
+import { Redirect } from "react-router-dom";
 
 
 const styles = theme => ({
@@ -54,96 +53,100 @@ class Inscription extends Component {
         // déclarer un état...
 
         this.state = {
-            //   restaurants: {
-            //     'restaurants-0': {},
-            //   }
+            goPageLogin: false,
+            isLoggedIn: false
         };
     }
 
+    sinscrire = () => {
+        this.setState({
+            isLoggedIn: true
+        });
+    }
+
     login = () => {
-        ReactDOM.render(<Login />, document.getElementById('root'));
+        this.setState({
+            goPageLogin: true
+        });
     }
 
-    componentWillMount() {
-        console.log("Will mount")
-        // this.ref = base.syncState("restaurants", {
-        //   context: this,
-        //   state: "restaurants"
-        // });
-
+    renderRedirect = () => {
+        if (this.state.isLoggedIn) {
+            return <Redirect to='/restaurants' />
+        }
     }
-
-    componentWillUnmount() {
-        console.log("Will unmount")
-        // base.removeBinding(this.ref);
-    }
-
 
     // méthodes
     render() {
         const { classes } = this.props;
-
         return (
-            <main className={classes.main}>
-                <CssBaseline />
-                <Paper className={classes.paper}>
-                    <Typography component="h1" variant="h5">
-                        Inscription
-                    </Typography>
-                    <form className={classes.form}>
-                        <FormControl margin="normal" required fullWidth>
-                            <TextField
-                                id="outlined-email-input"
-                                label="Email"
-                                className={classes.textField}
-                                type="email"
-                                placeholder="wyz@yahoo.fr"
-                                style={{ margin: 8 }}
-                                name="email"
-                                fullWidth
-                                autoComplete="email"
-                                margin="normal"
-                                variant="outlined"
-                            />
-                        </FormControl>
-                        <FormControl margin="normal" required fullWidth>
-                            <TextField
-                                id="outlined-password-input"
-                                label="Mot de passe"
-                                className={classes.textField}
-                                style={{ margin: 8 }}
-                                type="password"
-                                autoComplete="current-password"
-                                fullWidth
-                                margin="normal"
-                                variant="outlined"
-                            />
-                        </FormControl>
-                        <FormControl margin="normal" required fullWidth>
-                            <TextField
-                                id="outlined-password-input-confirm"
-                                label="Retaper votre mot de passe"
-                                className={classes.textField}
-                                style={{ margin: 8 }}
-                                type="password"
-                                autoComplete="current-password"
-                                fullWidth
-                                margin="normal"
-                                variant="outlined"
-                            />
-                        </FormControl>
+            <div>
+                {this.renderRedirect()}
+                {
+                    !this.state.goPageLogin ? (
+                        <main className={classes.main}>
+                            <CssBaseline />
+                            <Paper className={classes.paper}>
+                                <Typography component="h1" variant="h5">
+                                    Inscription
+                                </Typography>
+                                <form className={classes.form}>
+                                    <FormControl margin="normal" required fullWidth>
+                                        <TextField
+                                            id="outlined-email-input"
+                                            label="Email"
+                                            className={classes.textField}
+                                            type="email"
+                                            placeholder="wyz@yahoo.fr"
+                                            style={{ margin: 8 }}
+                                            name="email"
+                                            fullWidth
+                                            autoComplete="email"
+                                            margin="normal"
+                                            variant="outlined"
+                                        />
+                                    </FormControl>
+                                    <FormControl margin="normal" required fullWidth>
+                                        <TextField
+                                            id="outlined-password-input"
+                                            label="Mot de passe"
+                                            className={classes.textField}
+                                            style={{ margin: 8 }}
+                                            type="password"
+                                            autoComplete="current-password"
+                                            fullWidth
+                                            margin="normal"
+                                            variant="outlined"
+                                        />
+                                    </FormControl>
+                                    <FormControl margin="normal" required fullWidth>
+                                        <TextField
+                                            id="outlined-password-input-confirm"
+                                            label="Retaper votre mot de passe"
+                                            className={classes.textField}
+                                            style={{ margin: 8 }}
+                                            type="password"
+                                            autoComplete="current-password"
+                                            fullWidth
+                                            margin="normal"
+                                            variant="outlined"
+                                        />
+                                    </FormControl>
 
-                        <Grid className={classes.submit}>
-                            <Fab size="large" variant="extended" color="secondary">
-                                S'inscrire
-                            </Fab>
-                            <Button  onClick={this.login} variant="text" color="primary">
-                                Se connecter
-                            </Button>
-                        </Grid>
-                    </form>
-                </Paper>
-            </main>
+                                    <Grid className={classes.submit}>
+                                        <Fab size="large" onClick={this.sinscrire} variant="extended" color="secondary">
+                                            S'inscrire
+                                        </Fab>
+                                        <Button onClick={this.login} variant="text" color="primary">
+                                            Se connecter
+                                        </Button>
+                                    </Grid>
+                                </form>
+                            </Paper>
+                        </main>
+                    ) : (<Redirect to="/" />)
+                }
+            </div>
         );
     }
 }

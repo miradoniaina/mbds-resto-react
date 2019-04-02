@@ -1,5 +1,4 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from '@material-ui/core/styles';
@@ -21,9 +20,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import HomeRounded from '@material-ui/icons/HomeRounded';
 import Logout from '@material-ui/icons/AccessibilityOutlined';
-
-import Restaurants from '../restaurants/Restaurants';
-import Login from '../authentification/Login';
+import { Redirect } from "react-router-dom";
 
 const drawerWidth = 240;
 
@@ -87,18 +84,34 @@ const styles = theme => ({
 class PersistentDrawerRight extends React.Component {
   state = {
     open: false,
+    deconnected: false,
+    goHome: false,
   };
 
   accueil = () => {
-    ReactDOM.render(<Restaurants />, document.getElementById('main'));
+    this.setState({
+      goHome:true
+    });
     this.handleDrawerClose();
+  }
+
+  goingHome = () => {
+    if(this.state.goHome){
+      return <Redirect to='/restaurants' />
+    }
   }
 
   deconnexion = () => {
-    this.handleDrawerClose();
-    ReactDOM.render(<Login />, document.getElementById('root'));
+    this.setState({
+      deconnected:true
+    });
   }
 
+  isDeconnected = () => {
+    if(this.state.deconnected){
+      return <Redirect to='/' />
+    }
+  }
 
   handleDrawerOpen = () => {
     this.setState({ open: true });
@@ -114,6 +127,8 @@ class PersistentDrawerRight extends React.Component {
 
     return (
       <div className={classes.root}>
+        {this.isDeconnected()}
+        {this.goingHome()}
         <CssBaseline />
         <AppBar
           position="fixed"
@@ -143,7 +158,7 @@ class PersistentDrawerRight extends React.Component {
         >
           <div className={classes.drawerHeader} />
           <div id="main">
-            <Restaurants />
+            {this.props.main}
           </div>
         </main>
         <Drawer
