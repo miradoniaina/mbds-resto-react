@@ -1,12 +1,13 @@
+
 .left {
-    background-color: #8894D5; 
+    background-color: #95A3A4; 
     /* opacity: 0.8; */
     /* filter: alpha(opacity=60); */
     padding-top: 5%;
 }
 
 .right{
-    background-color: #8894D5; 
+    background-color: #C9CEBD; 
     /* opacity: 0.8; */
     /* filter: alpha(opacity=60); */
 }
@@ -14,7 +15,12 @@
 .menu {
     margin-top: 20px;
     /* border: 1px solid rgb(61, 82, 206); */
-    background-color: rgb(224, 227, 240);
+    background-color: #697268;
+    
+}
+
+#commande {
+    background-color: #E2E8DD;
 }
 
 #resto{
@@ -41,9 +47,9 @@
     margin-top: 15%;
 }
 
-#menu-resto{
+.menu-resto{
     margin-top: 2%;
-    background-color: #8894D5; 
+    background-color: #697268; 
     /* opacity: 0.8; */
     /* filter: alpha(opacity=60); */
 }

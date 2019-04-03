@@ -9,7 +9,7 @@ import Typography from '@material-ui/core/Typography';
 
 import base from '../../base';
 
-import Restaurant from '../Restaurant/Restaurant.js';
+import Restaurant from '../restaurant/Restaurant.js';
 import { Redirect } from "react-router-dom";
 import MyDrawer from '../drawer/MyDrawer';
 
@@ -59,8 +59,6 @@ class Restaurants extends Component {
       // this.handleDrawerClose();
 
       let redirect = "/restaurants/"+this.state.key.split('-')[1];
-
-      console.log(redirect);
 
       return <Redirect to={redirect} />
     }

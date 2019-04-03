@@ -18,8 +18,6 @@ import Url from '../../Url';
 
 import './Restaurant.css';
 
-import tileData from '../../tileData';
-
 const styles = theme => ({
     listTitle: {
         width: "100%",

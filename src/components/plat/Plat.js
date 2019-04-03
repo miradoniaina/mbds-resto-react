@@ -135,7 +135,7 @@ class Plat extends Component {
                     <CardActionArea>
                         <CardMedia
                             className={classes.media}
-                            image={Url.imageUrl+"/plats/entree-10.jpg"}
+                            image={Url.imageUrl+"/plats/"+photo}
                             title="Paella dish"
                         // onClick={this.onClickPlat}
                         />

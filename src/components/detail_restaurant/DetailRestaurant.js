@@ -3,7 +3,6 @@ import { withStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
-import ReactDOM from 'react-dom';
 import Fab from '@material-ui/core/Fab';
 
 
@@ -93,6 +92,7 @@ class DetailRestaurant extends Component {
         this.state = {
             restaurant: {},
             menus: {},
+            carte: {},
             showMenu: true
         };
     }
@@ -107,11 +107,17 @@ class DetailRestaurant extends Component {
             context: this,
             state: "menus"
         });
+
+        this.detailCarteRef = base.syncState('detail-restaurants/detail-restaurants-' + this.props.match.params.cle + "/carte", {
+            context: this,
+            state: "carte"
+        });
     }
 
     componentWillUnmount() {
         base.removeBinding(this.restaurantRef);
         base.removeBinding(this.detailRestaurantRef);
+        base.removeBinding(this.detailCarteRef);
     }
 
 
@@ -137,6 +143,8 @@ class DetailRestaurant extends Component {
             )
         });
 
+        
+
         let menuOuCarte = "cartes";
         let buttonMenuOuCarte = <Button onClick={this.switchMenuCarte} variant="outlined" color="secondary" className={classes.button}>
                                     Notre Carte
@@ -145,7 +153,7 @@ class DetailRestaurant extends Component {
 
         if (this.state.showMenu) {
             menuOuCarte = <div id="menu-carte">
-                                <Typography variant="title" gutterBottom>
+                                <Typography variant="h2" gutterBottom>
                                     Menu du jour
                                 </Typography>
                                 {menus_v}
@@ -154,6 +162,7 @@ class DetailRestaurant extends Component {
             buttonMenuOuCarte=<Button onClick={this.switchMenuCarte} variant="outlined" color="secondary" className={classes.button}>
                 Menu du jour
             </Button>;
+            menuOuCarte = <Cartes carte={this.state.carte}/>;
         }
 
 
@@ -164,7 +173,7 @@ class DetailRestaurant extends Component {
                 <Grid item xs={3}
                 >
                     <div className="left">
-                        <Typography variant="h3" gutterBottom align="center">
+                        <Typography variant="h1" gutterBottom align="center">
                             {this.state.restaurant.nom}
                         </Typography>
                         <Typography variant="title" gutterBottom align="center">
@@ -276,10 +285,10 @@ class DetailRestaurant extends Component {
                     </div>
                 </Grid>
                 <Grid item xs={9}>
-                    <Typography variant="title" gutterBottom>
+                    <Typography variant="h2" gutterBottom>
                         Ma commande
                     </Typography>
-                    <div className="right">
+                    <div id="commande">
                         <Table className={classes.table}>
                             <TableHead>
                                 <TableRow>

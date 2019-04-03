@@ -20,8 +20,10 @@ const styles = theme => ({
         display: 'none',
     },
     root: {
+        marginTop: 15,
         display: 'flex',
         flexWrap: 'wrap',
+        backgroundColor: "#E2E8DD",
     },
     formControl: {
         margin: theme.spacing.unit,
@@ -86,7 +88,7 @@ class Menu extends Component {
         return (
             <div>
                 <div>
-                    <div id="menu-resto">
+                    <div className="menu-resto">
                         <Grid container spacing={24}
                             justify="center"
                         >
@@ -110,36 +112,36 @@ class Menu extends Component {
                             {plats_v}
                         </Grid>
                         <form className={classes.root} autoComplete="off">
-                                    <FormControl className={classes.formControl} fullWidth>
-                                        <InputLabel htmlFor="age-simple">Quantité(s)</InputLabel>
-                                        <Select
-                                            value={this.state.qte}
-                                            onChange={this.handleChange}
-                                            variant="filled"
-                                            inputProps={{
-                                                name: 'qte',
-                                                id: 'age-simple',
-                                            }}
-                                        >
-                                            <MenuItem selected value="0">
-                                                <em></em>
-                                            </MenuItem>
-                                            <MenuItem value={1}>1</MenuItem>
-                                            <MenuItem value={2}>2</MenuItem>
-                                            <MenuItem value={3}>3</MenuItem>
-                                            <MenuItem value={4}>4</MenuItem>
-                                            <MenuItem value={5}>5</MenuItem>
-                                            <MenuItem value={6}>6</MenuItem>
-                                            <MenuItem value={7}>7</MenuItem>
-                                            <MenuItem value={8}>8</MenuItem>
-                                            <MenuItem value={9}>9</MenuItem>
-                                            <MenuItem value={10}>10</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </form>
-                                <Button variant="contained" fullWidth color="primary" className={classes.button}>
-                                    Ajouter au panier
+                            <FormControl className={classes.formControl} fullWidth>
+                                <InputLabel htmlFor="age-simple">Quantité(s)</InputLabel>
+                                <Select
+                                    value={this.state.qte}
+                                    onChange={this.handleChange}
+                                    variant="filled"
+                                    inputProps={{
+                                        name: 'qte',
+                                        id: 'age-simple',
+                                    }}
+                                >
+                                    <MenuItem selected value="0">
+                                        <em></em>
+                                    </MenuItem>
+                                    <MenuItem value={1}>1</MenuItem>
+                                    <MenuItem value={2}>2</MenuItem>
+                                    <MenuItem value={3}>3</MenuItem>
+                                    <MenuItem value={4}>4</MenuItem>
+                                    <MenuItem value={5}>5</MenuItem>
+                                    <MenuItem value={6}>6</MenuItem>
+                                    <MenuItem value={7}>7</MenuItem>
+                                    <MenuItem value={8}>8</MenuItem>
+                                    <MenuItem value={9}>9</MenuItem>
+                                    <MenuItem value={10}>10</MenuItem>
+                                </Select>
+                            </FormControl>
+                            <Button variant="contained" fullWidth color="primary" className={classes.button}>
+                                Ajouter au panier
                                 </Button>
+                        </form>
                     </div>
                 </div>
             </div>

@@ -9,49 +9,45 @@ import Plat from '../plat/Plat';
 
 class Cartes extends Component {
 
-    constructor(props) {
-        super(props);
-        // déclarer un état...
-        // this.state = {
-        //   restaurants: {
-        //     'restaurants-0': {},
-        //   }
-        // };
-
-    }
-
-    details() {
-        console.log("details");
-        // ReactDOM.render(<DetailRestaurant />, document.getElementById('main'));
-    }
-
-    componentWillMount() {
-        console.log("Will mount")
-        // this.ref = base.syncState("restaurants", {
-        //   context: this,
-        //   state: "restaurants"
-        // });
-
-    }
-
-    componentWillUnmount() {
-        console.log("Will unmount")
-        // base.removeBinding(this.ref);
-    }
-
-
+    
     // méthodes
     render() {
 
-        // const { classes } = this.props;
+        const { carte } = this.props;
 
-        return (
-            <div>
-                {/* <div>
-                    <Typography variant="title" gutterBottom>
-                        Notre carte
-                    </Typography>
-                    <div id="menu-resto">
+        let cartes_v = Object.keys(carte).map((key, index) => {
+            let el = carte[key];
+
+            let sous_carte_v = Object.keys(el).map((key1, index) => {
+                let plat = el[key1];
+
+                return (
+                    <React.Fragment
+                        key={key1}
+                    >
+                        <Grid
+                            item xs={3}
+                        >
+                            <Plat
+                                cle={key}
+                                type={plat.type}
+                                nom={plat.nom}
+                                description={plat.description}
+                                prix={plat.prix}
+                                photo={plat.photo}
+                            />
+                        </Grid>
+                    </React.Fragment>
+                )
+            });
+
+
+            return (
+                <React.Fragment
+                    key={key}
+                >
+                    <Grid className="menu-resto"
+                    >
                         <Grid container spacing={24}
                             justify="center"
                         >
@@ -63,7 +59,7 @@ class Cartes extends Component {
                                     gutterBottom
                                     align="center"
                                 >
-                                    All Day breakfast
+                                    {key}
                                 </Typography>
                                 <hr />
                             </Grid>
@@ -72,88 +68,24 @@ class Cartes extends Component {
                         <Grid container spacing={24}
                             justify="flex-start"
                         >
-                            <Grid
-                                item xs={3}
-                            >
-                                <Plat />
-                            </Grid>
-                            <Grid
-                                item xs={3}
-                            >
-                                <Plat />
-                            </Grid>
-                            <Grid
-                                item xs={3}
-                            >
-                                <Plat />
-                            </Grid>
-                            <Grid
-                                item xs={3}
-                            >
-                                <Plat />
-                            </Grid>
-                            <Grid
-                                item xs={3}
-                            >
-                                <Plat />
-                            </Grid>
+                            {sous_carte_v}
                         </Grid>
+                    </Grid>
+                </React.Fragment>
+            )
+        });
 
 
-                        <Grid container spacing={24}
-                            justify="center"
-                        >
-                            <Grid
-                                item xs={12}
-                            >
-                                <Typography
-                                    variant="h3"
-                                    gutterBottom
-                                    align="center"
-                                >
-                                    Salads
-                                </Typography>
-                                <hr />
-                            </Grid>
-
-                           
-
-                        </Grid>
-                        <Grid container spacing={24}
-                            justify="center"
-                        >
-                            <Grid
-                                item xs={12}
-                            >
-                                <Typography
-                                    variant="h3"
-                                    gutterBottom
-                                    align="center"
-                                >
-                                    Sandwich
+        return (
+            <div>
+                <div>
+                    <Typography variant="h2" gutterBottom>
+                        Notre carte
                     </Typography>
-                                <hr />
-                            </Grid>
-                        </Grid>
-                        <Grid container spacing={24}
-                            justify="center"
-                        >
-                            <Grid
-                                item xs={12}
-                            >
-                                <Typography
-                                    variant="h3"
-                                    gutterBottom
-                                    align="center"
-                                >
-                                    Hot drink
-                    </Typography>
-                                <hr />
-                            </Grid>
-                        </Grid>
+                    <div id="menu-resto">
+                        {cartes_v}
                     </div>
-                
-                </div> */}
+                </div>
             </div>
         );
     }
