@@ -120,6 +120,8 @@ class Plat extends Component {
 
         const { classes, nom, type, description, prix, photo } = this.props;
 
+        console.log(photo);
+
         return (
             <div>
                 <Card className={classes.card}>
@@ -135,7 +137,7 @@ class Plat extends Component {
                     <CardActionArea>
                         <CardMedia
                             className={classes.media}
-                            image={Url.imageUrl+"/plats/"+photo}
+                            image={Url.imageUrl + "plats/" + photo}
                             title="Paella dish"
                         // onClick={this.onClickPlat}
                         />
@@ -192,7 +194,8 @@ class Plat extends Component {
                                 component="title"
                                 id="prix"
                             >
-                                {prix} AR
+                                {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'MGA' }).format(prix)}
+                                
                             </Typography>
                     </CardActions>
                 </Card>

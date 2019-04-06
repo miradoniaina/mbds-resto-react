@@ -5,13 +5,14 @@ import Grid from '@material-ui/core/Grid';
 import Link from '@material-ui/core/Link';
 import Fab from '@material-ui/core/Fab';
 
-
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+import PropTypes from "prop-types";
+
 
 import Menu from '../menu/Menu';
 import Cartes from '../cartes/Cartes';
@@ -22,6 +23,7 @@ import Url from '../../Url';
 
 import './DetailRestaurant.css';
 import MyDrawer from '../drawer/MyDrawer';
+import RestoMap from '../../components/map/RestoMap';
 
 const TAX_RATE = 0.07;
 
@@ -49,6 +51,14 @@ const styles = theme => ({
         width: 60,
         height: 60,
     },
+    paper: {
+        position: "absolute",
+        width: theme.spacing.unit * 50,
+        backgroundColor: theme.palette.background.paper,
+        boxShadow: theme.shadows[5],
+        padding: theme.spacing.unit * 4,
+        outline: "none"
+    }
 });
 
 function ccyFormat(num) {
@@ -82,7 +92,6 @@ const invoiceSubtotal = subtotal(rows);
 const invoiceTaxes = TAX_RATE * invoiceSubtotal;
 const invoiceTotal = invoiceTaxes + invoiceSubtotal;
 
-
 class DetailRestaurant extends Component {
 
 
@@ -91,9 +100,11 @@ class DetailRestaurant extends Component {
         // déclarer un état...
         this.state = {
             restaurant: {},
-            menus: {},
-            carte: {},
-            showMenu: true
+            // menus: {},
+            // carte: {},
+            detail_restaurant: {},
+            showMenu: true,
+            showMap: false
         };
     }
 
@@ -103,23 +114,37 @@ class DetailRestaurant extends Component {
             state: "restaurant"
         });
 
-        this.detailRestaurantRef = base.syncState('detail-restaurants/detail-restaurants-' + this.props.match.params.cle + "/menus", {
+
+        this.detailRestaurantRef = base.syncState('detail-restaurants/detail-restaurants-' + this.props.match.params.cle, {
             context: this,
-            state: "menus"
+            state: "detail_restaurant"
         });
 
-        this.detailCarteRef = base.syncState('detail-restaurants/detail-restaurants-' + this.props.match.params.cle + "/carte", {
-            context: this,
-            state: "carte"
-        });
+        // this.menuRef = base.syncState('detail-restaurants/detail-restaurants-' + this.props.match.params.cle + "/menus", {
+        //     context: this,
+        //     state: "menus"
+        // });
+
+        // this.detailCarteRef = base.syncState('detail-restaurants/detail-restaurants-' + this.props.match.params.cle + "/carte", {
+        //     context: this,
+        //     state: "carte"
+        // });
     }
 
     componentWillUnmount() {
         base.removeBinding(this.restaurantRef);
+        // base.removeBinding(this.menuRef);
         base.removeBinding(this.detailRestaurantRef);
-        base.removeBinding(this.detailCarteRef);
+        // base.removeBinding(this.detailCarteRef);
     }
 
+    showMap = () => {
+        this.setState({ showMap: true });
+    }
+
+    showMenuCarte = () => {
+        this.setState({ showMap: false });
+    }
 
     switchMenuCarte = () => {
         this.setState({ showMenu: !this.state.showMenu });
@@ -129,41 +154,109 @@ class DetailRestaurant extends Component {
     // méthodes
     render() {
         const { classes } = this.props;
-        const { menus } = this.state;
+        const { showMap, detail_restaurant } = this.state;
 
-        let menus_v = Object.keys(menus).map((key, index) => {
-            let el = menus[key];
-            return (
-                <Menu
-                    menu={el.nom_menu}
-                    key={key}
-                    cle={key}
-                    plats={el.plats}
-                />
-            )
-        });
+        let menus =  detail_restaurant.menus;
 
-        
+        let mapOrMenu="";
+        if (showMap) {
+            mapOrMenu = <React.Fragment>
+                            <RestoMap
+                                latitude = {detail_restaurant.latitude}
+                                longitude = {detail_restaurant.longitude}
+                            />
+                        </React.Fragment>;
+        } else {
+            let menus_v = "";
 
-        let menuOuCarte = "cartes";
-        let buttonMenuOuCarte = <Button onClick={this.switchMenuCarte} variant="outlined" color="secondary" className={classes.button}>
-                                    Notre Carte
-                                </Button>;
-   
+            if(menus!=null){
+                menus_v = Object.keys(menus).map((key, index) => {
+                    let el = menus[key];
+                    return (
+                        <Menu
+                            menu={el.nom_menu}
+                            key={key}
+                            cle={key}
+                            plats={el.plats}
+                        />
+                    )
+                });     
+            }
 
-        if (this.state.showMenu) {
-            menuOuCarte = <div id="menu-carte">
-                                <Typography variant="h2" gutterBottom>
-                                    Menu du jour
-                                </Typography>
-                                {menus_v}
-                            </div>;
-        }else{
-            buttonMenuOuCarte=<Button onClick={this.switchMenuCarte} variant="outlined" color="secondary" className={classes.button}>
-                Menu du jour
-            </Button>;
-            menuOuCarte = <Cartes carte={this.state.carte}/>;
+            let menuOuCarte = "cartes";
+            let buttonMenuOuCarte = <Button onClick={this.switchMenuCarte} variant="outlined" color="secondary" className={classes.button}>
+                Notre Carte
+                                    </Button>;
+
+            if (this.state.showMenu) {
+                menuOuCarte = <div id="menu-carte">
+                    <Typography variant="h2" gutterBottom>
+                        Menu du jour
+                    </Typography>
+                    {menus_v}
+                </div>;
+            } else {
+                buttonMenuOuCarte = <Button onClick={this.switchMenuCarte} variant="outlined" color="secondary" className={classes.button}>
+                    Menu du jour
+                </Button>;
+                menuOuCarte = <Cartes carte={detail_restaurant.carte} />;
+            };
+
+            mapOrMenu =
+                <React.Fragment>
+                    <Typography variant="h2" gutterBottom>
+                        Ma commande
+                </Typography>
+                    <div id="commande">
+                        <Table className={classes.table}>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Plat</TableCell>
+                                    <TableCell align="right">Quantité</TableCell>
+                                    {/* <TableCell align="right">@</TableCell> */}
+                                    <TableCell align="right">Prix</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {rows.map(row => (
+                                    <TableRow key={row.id}>
+                                        <TableCell>{row.desc}</TableCell>
+                                        <TableCell align="right">{row.qty}</TableCell>
+                                        {/* <TableCell align="right">{row.unit}</TableCell> */}
+                                        <TableCell align="right">{ccyFormat(row.price)}</TableCell>
+                                    </TableRow>
+                                ))}
+                                <TableRow>
+                                    <TableCell rowSpan={3} />
+                                    <TableCell colSpan={2}>Total</TableCell>
+                                    <TableCell align="right">{ccyFormat(invoiceTotal)}</TableCell>
+                                </TableRow>
+                            </TableBody>
+                        </Table>
+                        <Grid container spacing={24}
+                            justify="flex-end"
+                        >
+                            <Fab
+                                id="btncommande"
+                                size="large"
+                                variant="extended"
+                                color="secondary"
+                            >
+                                Commander
+                    </Fab>
+                        </Grid>
+                    </div>
+                    <Grid container spacing={24}
+                        justify="flex-end"
+                        id="button-carte"
+                    >
+                        {buttonMenuOuCarte}
+                    </Grid>
+                    {menuOuCarte}
+                </React.Fragment>
+                ;
         }
+
 
 
         let main = <Grid
@@ -178,7 +271,7 @@ class DetailRestaurant extends Component {
                         </Typography>
                         <Typography variant="title" gutterBottom align="center">
                             Restaurant
-                    </Typography>
+                        </Typography>
                         <Grid container justify="center" alignItems="center">
                             <Link>
                                 <img id="img" src={Url.imageUrl + "/restaurants/" + this.state.restaurant.photo} alt={this.state.restaurant.photo} />
@@ -208,10 +301,11 @@ class DetailRestaurant extends Component {
                             <Grid
                                 item xs={3}
                             >
-                                <Link className=""
+                                <Button
+                                    onClick={this.showMenuCarte}
                                 >
-                                    Menus&cartes
-                            </Link>
+                                    Menu&Carte
+                                    </Button>
                             </Grid>
                         </Grid>
 
@@ -241,6 +335,17 @@ class DetailRestaurant extends Component {
                                 <Typography variant="subtitle2" gutterBottom align="center">
                                     {this.state.restaurant.adresse}
                                 </Typography>
+
+                                <Grid container spacing={24}
+                                    justify="center"
+                                >
+                                    <Button
+                                        onClick={this.showMap}
+                                    >
+                                        Google Map
+                                        </Button>
+                                </Grid>
+
                             </Grid>
                         </Grid>
 
@@ -250,10 +355,7 @@ class DetailRestaurant extends Component {
                             <Grid
                                 item xs={3}
                             >
-                                <Link
-                                >
-                                    Google Map
-                             </Link>
+
                             </Grid>
                         </Grid>
 
@@ -279,67 +381,13 @@ class DetailRestaurant extends Component {
                             >
                                 <Typography variant="subtitle2" gutterBottom align="center">
                                     {lowerCase(this.state.restaurant.nom)}@restaurant.com
-                                </Typography>
+                                    </Typography>
                             </Grid>
                         </Grid>
                     </div>
                 </Grid>
                 <Grid item xs={9}>
-                    <Typography variant="h2" gutterBottom>
-                        Ma commande
-                    </Typography>
-                    <div id="commande">
-                        <Table className={classes.table}>
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Plat</TableCell>
-                                    <TableCell align="right">Quantité</TableCell>
-                                    {/* <TableCell align="right">@</TableCell> */}
-                                    <TableCell align="right">Prix</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {rows.map(row => (
-                                    <TableRow key={row.id}>
-                                        <TableCell>{row.desc}</TableCell>
-                                        <TableCell align="right">{row.qty}</TableCell>
-                                        {/* <TableCell align="right">{row.unit}</TableCell> */}
-                                        <TableCell align="right">{ccyFormat(row.price)}</TableCell>
-                                    </TableRow>
-                                ))}
-                                <TableRow>
-                                    <TableCell rowSpan={3} />
-                                    <TableCell colSpan={2}>Total</TableCell>
-                                    <TableCell align="right">{ccyFormat(invoiceTotal)}</TableCell>
-                                </TableRow>
-                            </TableBody>
-                        </Table>
-
-                        <Grid container spacing={24}
-                            justify="flex-end"
-                        >
-                            <Fab
-                                id="btncommande"
-                                size="large"
-                                variant="extended"
-                                color="secondary"
-                            >
-                                Commander
-                        </Fab>
-                        </Grid>
-
-                    </div>
-
-
-                    <Grid container spacing={24}
-                        justify="flex-end"
-                        id="button-carte"
-                    >
-                        {buttonMenuOuCarte}
-                    </Grid>
-
-                    {menuOuCarte}
-
+                    {mapOrMenu}
                 </Grid>
             </Grid>
         </Grid>;
@@ -349,5 +397,9 @@ class DetailRestaurant extends Component {
         );
     }
 }
+
+DetailRestaurant.propTypes = {
+    classes: PropTypes.object.isRequired
+};
 
 export default withStyles(styles)(DetailRestaurant);

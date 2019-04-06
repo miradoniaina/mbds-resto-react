@@ -100,7 +100,7 @@ class Menu extends Component {
                                     gutterBottom
                                     align="center"
                                 >
-                                    Menu {this.props.menu}
+                                    {this.props.menu}
                                 </Typography>
                                 <hr />
                             </Grid>
