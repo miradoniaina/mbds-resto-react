@@ -8,7 +8,6 @@ import Plat from '../plat/Plat';
 
 
 class Cartes extends Component {
-
     
     // méthodes
     render() {
@@ -30,11 +29,8 @@ class Cartes extends Component {
                         >
                             <Plat
                                 cle={key}
-                                type={plat.type}
-                                nom={plat.nom}
-                                description={plat.description}
-                                prix={plat.prix}
-                                photo={plat.photo}
+                                plat={plat}
+                                ajouterCommande = {this.props.ajouterCommande.bind(this.props.ajouterCommande)}
                             />
                         </Grid>
                     </React.Fragment>

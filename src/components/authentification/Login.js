@@ -114,7 +114,7 @@ class Login extends Component {
                                 <FormControl margin="normal" required fullWidth>
                                     <TextField
                                         id="outlined-password-input"
-                                        label="Password"
+                                        label="Mot de passe"
                                         className={classes.textField}
                                         style={{ margin: 8 }}
                                         type="password"

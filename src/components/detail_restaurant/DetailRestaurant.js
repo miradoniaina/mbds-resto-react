@@ -11,6 +11,8 @@ import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Button from '@material-ui/core/Button';
+
+import LocationSearchingSharp from '@material-ui/icons/LocationSearchingSharp';
 import PropTypes from "prop-types";
 
 
@@ -24,8 +26,11 @@ import Url from '../../Url';
 import './DetailRestaurant.css';
 import MyDrawer from '../drawer/MyDrawer';
 import RestoMap from '../../components/map/RestoMap';
+import SousCommande from '../sous_commande/SousCommande';
 
-const TAX_RATE = 0.07;
+
+
+// const TAX_RATE = 0.07;
 
 const styles = theme => ({
     root: {
@@ -65,32 +70,22 @@ function ccyFormat(num) {
     return `${num.toFixed(2)}`;
 }
 
-function priceRow(qty, unit) {
-    return qty * unit;
-}
-
-function createRow(id, desc, qty, unit) {
-    const price = priceRow(qty, unit);
-    return { id, desc, qty, unit, price };
-}
-
 function subtotal(items) {
-    return items.map(({ price }) => price).reduce((sum, i) => sum + i, 0);
+    return items.map(({ prix, qte }) => prix * qte).reduce((sum, i) => sum + i, 0);
 }
 
 function lowerCase(str) {
     return (str + "").toLowerCase();
 }
 
-const rows = [
-    ['Paperclips (Box)', 100, 1.15],
-    ['Paper (Case)', 10, 45.99],
-    ['Waste Basket', 2, 17.99],
-].map((row, id) => createRow(id, ...row));
-
-const invoiceSubtotal = subtotal(rows);
-const invoiceTaxes = TAX_RATE * invoiceSubtotal;
-const invoiceTotal = invoiceTaxes + invoiceSubtotal;
+function isIn(commandes, oldElements) {
+    for (let i = 0; i < oldElements.length; i++) {
+        if (commandes._id === oldElements[i].cle) {
+            return true
+        }
+    }
+    return false;
+}
 
 class DetailRestaurant extends Component {
 
@@ -100,11 +95,10 @@ class DetailRestaurant extends Component {
         // déclarer un état...
         this.state = {
             restaurant: {},
-            // menus: {},
-            // carte: {},
             detail_restaurant: {},
             showMenu: true,
-            showMap: false
+            showMap: false,
+            macommande: [],
         };
     }
 
@@ -119,23 +113,11 @@ class DetailRestaurant extends Component {
             context: this,
             state: "detail_restaurant"
         });
-
-        // this.menuRef = base.syncState('detail-restaurants/detail-restaurants-' + this.props.match.params.cle + "/menus", {
-        //     context: this,
-        //     state: "menus"
-        // });
-
-        // this.detailCarteRef = base.syncState('detail-restaurants/detail-restaurants-' + this.props.match.params.cle + "/carte", {
-        //     context: this,
-        //     state: "carte"
-        // });
     }
 
     componentWillUnmount() {
         base.removeBinding(this.restaurantRef);
-        // base.removeBinding(this.menuRef);
         base.removeBinding(this.detailRestaurantRef);
-        // base.removeBinding(this.detailCarteRef);
     }
 
     showMap = () => {
@@ -150,26 +132,69 @@ class DetailRestaurant extends Component {
         this.setState({ showMenu: !this.state.showMenu });
     }
 
+    modifierQteSousCommande(qte, index) {
+        let commandeupdt = this.state.macommande;
+
+        for (let i = 0; i < commandeupdt.length; i++) {
+            if (i === index) {
+                commandeupdt[i].qte = qte;
+                break;
+            }
+        }
+
+        this.setState({ macommande: commandeupdt });
+    }
+
+    ajouterCommande(commandes, quantite) {
+        const oldElements = this.state.macommande;
+
+        if (isIn(commandes, oldElements)) {
+            return;
+        }
+
+        const newCommande = {
+            cle: commandes._id,
+            nom: commandes.nom,
+            qte: quantite,
+            prix: commandes.prix
+        }
+
+        this.setState({
+            macommande: oldElements.concat(newCommande), // concat retourne un nouveau tableau, pas de push ici !!!
+        });
+    }
+
+    supprimerCommande(commande) {
+
+        const newmacommande = this.state.macommande.filter((el, index) => {
+            return (el !== commande) ? el : null;
+        });
+
+        this.setState({
+            macommande: newmacommande
+        });
+    };
 
     // méthodes
     render() {
         const { classes } = this.props;
         const { showMap, detail_restaurant } = this.state;
 
-        let menus =  detail_restaurant.menus;
+        let menus = detail_restaurant.menus;
 
-        let mapOrMenu="";
+        let mapOrMenu = "";
         if (showMap) {
             mapOrMenu = <React.Fragment>
-                            <RestoMap
-                                latitude = {detail_restaurant.latitude}
-                                longitude = {detail_restaurant.longitude}
-                            />
-                        </React.Fragment>;
+                <RestoMap
+                    latitude={detail_restaurant.latitude}
+                    longitude={detail_restaurant.longitude}
+                    adresse={this.state.restaurant.adresse}
+                />
+            </React.Fragment>;
         } else {
             let menus_v = "";
 
-            if(menus!=null){
+            if (menus != null) {
                 menus_v = Object.keys(menus).map((key, index) => {
                     let el = menus[key];
                     return (
@@ -178,9 +203,10 @@ class DetailRestaurant extends Component {
                             key={key}
                             cle={key}
                             plats={el.plats}
+                            ajouterCommande={this.ajouterCommande.bind(this)}
                         />
                     )
-                });     
+                });
             }
 
             let menuOuCarte = "cartes";
@@ -199,7 +225,10 @@ class DetailRestaurant extends Component {
                 buttonMenuOuCarte = <Button onClick={this.switchMenuCarte} variant="outlined" color="secondary" className={classes.button}>
                     Menu du jour
                 </Button>;
-                menuOuCarte = <Cartes carte={detail_restaurant.carte} />;
+                menuOuCarte = <Cartes
+                    carte={detail_restaurant.carte}
+                    ajouterCommande={this.ajouterCommande.bind(this)}
+                />;
             };
 
             mapOrMenu =
@@ -218,18 +247,25 @@ class DetailRestaurant extends Component {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {rows.map(row => (
-                                    <TableRow key={row.id}>
-                                        <TableCell>{row.desc}</TableCell>
-                                        <TableCell align="right">{row.qty}</TableCell>
-                                        {/* <TableCell align="right">{row.unit}</TableCell> */}
-                                        <TableCell align="right">{ccyFormat(row.price)}</TableCell>
-                                    </TableRow>
-                                ))}
+                                {
+                                    this.state.macommande.map((row, index) => (
+                                        <SousCommande
+                                            key={index}
+                                            index={index}
+                                            sous_commandes={row}
+                                            modifierQteSousCommande={this.modifierQteSousCommande.bind(this)}
+                                            supprimerCommande={this.supprimerCommande.bind(this)}
+                                        >{row}
+                                        </SousCommande>
+                                    ))
+                                }
                                 <TableRow>
                                     <TableCell rowSpan={3} />
                                     <TableCell colSpan={2}>Total</TableCell>
-                                    <TableCell align="right">{ccyFormat(invoiceTotal)}</TableCell>
+                                    <TableCell align="right">
+                                        {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'MGA' }).format(ccyFormat(subtotal(this.state.macommande)))}
+
+                                    </TableCell>
                                 </TableRow>
                             </TableBody>
                         </Table>
@@ -240,7 +276,7 @@ class DetailRestaurant extends Component {
                                 id="btncommande"
                                 size="large"
                                 variant="extended"
-                                color="secondary"
+                                color="primary"
                             >
                                 Commander
                     </Fab>
@@ -263,7 +299,7 @@ class DetailRestaurant extends Component {
             className={classes.root}
         >
             <Grid container spacing={24}>
-                <Grid item xs={3}
+                <Grid item xs={4}
                 >
                     <div className="left">
                         <Typography variant="h1" gutterBottom align="center">
@@ -302,6 +338,7 @@ class DetailRestaurant extends Component {
                                 item xs={3}
                             >
                                 <Button
+                                    color="primary"
                                     onClick={this.showMenuCarte}
                                 >
                                     Menu&Carte
@@ -340,10 +377,14 @@ class DetailRestaurant extends Component {
                                     justify="center"
                                 >
                                     <Button
+                                        color="primary"
                                         onClick={this.showMap}
                                     >
-                                        Google Map
-                                        </Button>
+                                        <LocationSearchingSharp
+                                        
+                                        />
+                                        Voir sur carte
+                                    </Button>
                                 </Grid>
 
                             </Grid>
@@ -386,7 +427,7 @@ class DetailRestaurant extends Component {
                         </Grid>
                     </div>
                 </Grid>
-                <Grid item xs={9}>
+                <Grid item xs={8}>
                     {mapOrMenu}
                 </Grid>
             </Grid>
