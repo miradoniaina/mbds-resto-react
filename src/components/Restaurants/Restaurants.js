@@ -73,7 +73,7 @@ class Restaurants extends Component {
   }
 
   componentWillMount() {
-    console.log("Will mount")
+    
     this.ref = base.syncState("restaurants", {
       context: this,
       state: "restaurants"
@@ -81,7 +81,6 @@ class Restaurants extends Component {
   }
 
   componentWillUnmount() {
-    console.log("Will unmount")
     base.removeBinding(this.ref);
   }
 

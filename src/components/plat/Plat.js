@@ -10,7 +10,7 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 
 import IconButton from '@material-ui/core/IconButton';
-import FavoriteIcon from '@material-ui/icons/PaymentRounded';
+import AddShoppingCart from '@material-ui/icons/AddShoppingCart';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import red from '@material-ui/core/colors/red';
 
@@ -26,21 +26,6 @@ import Url from "../../Url";
 
 import './Plat.css';
 
-
-// function rand() {
-//     return Math.round(Math.random() * 20) - 10;
-// }
-
-// function getModalStyle() {
-//     const top = 50 + rand();
-//     const left = 50 + rand();
-
-//     return {
-//         top: `${top}%`,
-//         left: `${left}%`,
-//         transform: `translate(-${top}%, -${left}%)`,
-//     };
-// }
 
 const styles = theme => ({
     card: {
@@ -90,7 +75,6 @@ class Plat extends Component {
     }
 
     onClickPlat = () => {
-        console.log("onClickPlat");
         // ReactDOM.render(<DetailRestaurant />, document.getElementById('main'));
     }
 
@@ -99,7 +83,6 @@ class Plat extends Component {
     };
 
     componentWillMount() {
-        console.log("Will mount");
         // this.setState({
         //     labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
         //   });
@@ -110,18 +93,13 @@ class Plat extends Component {
     }
 
     componentWillUnmount() {
-        console.log("Will unmount")
         // base.removeBinding(this.ref);
     }
-
 
     // méthodes
     render() {
 
-        const { classes, nom, type, description, prix, photo } = this.props;
-
-        console.log(photo);
-
+        const { classes, plat } = this.props;
         return (
             <div>
                 <Card className={classes.card}>
@@ -131,13 +109,13 @@ class Plat extends Component {
                                 <MoreVertIcon />
                             </IconButton>
                         }
-                        title={nom}
-                        subheader={type}
+                        title={plat.nom}
+                        subheader={plat.type}
                     />
                     <CardActionArea>
                         <CardMedia
                             className={classes.media}
-                            image={Url.imageUrl + "plats/" + photo}
+                            image={Url.imageUrl + "plats/" + plat.photo}
                             title="Paella dish"
                         // onClick={this.onClickPlat}
                         />
@@ -145,58 +123,67 @@ class Plat extends Component {
                         //   onClick={this.onClickPlat}
                         >
                             <Typography component="p">
-                                {description}
+                                {plat.description}
                             </Typography>
                         </CardContent>
 
                     </CardActionArea>
 
-                    <CardActions className={classes.actions} disableActionSpacing>
-                        <IconButton aria-label="Add to favorites">
-                            <FavoriteIcon />
+                    <CardActions
+                        className={classes.actions}
+                        disableActionSpacing
+                    >
+                        <IconButton 
+                            color="primary"
+                            aria-label="Add to favorites"
+                            onClick = {() => this.props.ajouterCommande(plat, this.state.qte)}  
+                            >
+                            <AddShoppingCart />
                         </IconButton>
                         {/* <IconButton aria-label="Share">
                             <ShareIcon />
                         </IconButton> */}
 
-                            <FormControl variant="outlined" className={classes.formControl}>
-                                <InputLabel
-                                    ref={ref => {
-                                        this.InputLabelRef = ref;
-                                    }}
-                                    htmlFor="outlined-age-simple"
-                                >
-                                    Qte
-                              </InputLabel>
-                                <Select
-                                    value={this.state.qte}
-                                    onChange={this.handleChange}
-                                    input={
-                                        <OutlinedInput
-                                            labelWidth={this.state.labelWidth}
-                                            name="qte"
-                                            id="outlined-age-simple"
-                                        />
-                                    }
-                                >
-                                    <MenuItem value={1}>1</MenuItem>
-                                    <MenuItem value={2}>2</MenuItem>
-                                    <MenuItem value={3}>3</MenuItem>
-                                    <MenuItem value={4}>4</MenuItem>
-                                    <MenuItem value={5}>5</MenuItem>
-                                    <MenuItem value={6}>6</MenuItem>
-                                    <MenuItem value={7}>7</MenuItem>
-                                    <MenuItem value={8}>8</MenuItem>
-                                </Select>
-                            </FormControl>
-
-                            <Typography
-                                component="title"
-                                id="prix"
+                        <FormControl variant="outlined" className={classes.formControl}>
+                            <InputLabel
+                                ref={ref => {
+                                    this.InputLabelRef = ref;
+                                }}
+                                htmlFor="outlined-age-simple"
                             >
-                                {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'MGA' }).format(prix)}
-                                
-                            </Typography>
+                                Qte
+                              </InputLabel>
+                            <Select
+                                value={this.state.qte}
+                                onChange={this.handleChange}
+                                input={
+                                    <OutlinedInput
+                                        labelWidth={this.state.labelWidth}
+                                        name="qte"
+                                        id="outlined-age-simple"
+                                    />
+                                }
+                            >
+                                <MenuItem value={1}>1</MenuItem>
+                                <MenuItem value={2}>2</MenuItem>
+                                <MenuItem value={3}>3</MenuItem>
+                                <MenuItem value={4}>4</MenuItem>
+                                <MenuItem value={5}>5</MenuItem>
+                                <MenuItem value={6}>6</MenuItem>
+                                <MenuItem value={7}>7</MenuItem>
+                                <MenuItem value={8}>8</MenuItem>
+                                <MenuItem value={9}>9</MenuItem>
+                                <MenuItem value={10}>10</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <Typography
+                            component="title"
+                            id="prix"
+                        >
+                            {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'MGA' }).format(plat.prix)}
+
+                        </Typography>
                     </CardActions>
                 </Card>
             </div>

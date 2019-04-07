@@ -75,11 +75,8 @@ class Menu extends Component {
                 >
                     <Plat
                         cle={key}
-                        type={el.type}
-                        nom={el.nom}
-                        description={el.description}
-                        prix={el.prix}
-                        photo={el.photo}
+                        plat={el}
+                        ajouterCommande = {this.props.ajouterCommande.bind(this.props.ajouterCommande)}
                     />
                 </Grid>
             )
