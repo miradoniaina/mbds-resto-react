@@ -13,6 +13,7 @@ import Grid from '@material-ui/core/Grid';
 
 import Fab from '@material-ui/core/Fab';
 import { Redirect } from "react-router-dom";
+import base from '../../base';
 
 
 const styles = theme => ({
@@ -52,23 +53,35 @@ class Login extends Component {
 
     constructor(props) {
         super(props);
-
         this.state = {
             goInscription: false,
-            isLoggedIn: false
+            isLoggedIn: false,
+            email: '',
+            password: ''
         };
+        this.login = this.login.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.sinscrire = this.sinscrire.bind(this);
     }
-
-    sinscrire = () => {
+    handleChange= (e) =>  {
+        this.setState({ [e.target.name]: e.target.value });
+      }
+    sinscrire = (e) => {
         this.setState({
             goInscription: true
         });
     }
 
-    login = () => {
-        this.setState({
+    login = (e) => {
+       /* this.setState({
             isLoggedIn: true
+        });*/
+        e.preventDefault();
+        base.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
+        }).catch((error) => {
+            console.log(error);
         });
+
     }
 
     renderRedirect = () => {
@@ -109,6 +122,8 @@ class Login extends Component {
                                         autoComplete="email"
                                         margin="normal"
                                         variant="outlined"
+                                        value={this.state.email}
+                                        onChange={this.handleChange}
                                     />
                                 </FormControl>
                                 <FormControl margin="normal" required fullWidth>
@@ -119,9 +134,12 @@ class Login extends Component {
                                         style={{ margin: 8 }}
                                         type="password"
                                         autoComplete="current-password"
+                                        name="password"
                                         fullWidth
                                         margin="normal"
                                         variant="outlined"
+                                        value={this.state.password}
+                                        onChange={this.handleChange}
                                     />
                                 </FormControl>
                                 {/* <FormControlLabel

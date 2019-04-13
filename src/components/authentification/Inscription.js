@@ -11,6 +11,7 @@ import Paper from '@material-ui/core/Paper';
 import FormControl from '@material-ui/core/FormControl';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Redirect } from "react-router-dom";
+import base from '../../base';
 
 
 const styles = theme => ({
@@ -54,17 +55,38 @@ class Inscription extends Component {
 
         this.state = {
             goPageLogin: false,
-            isLoggedIn: false
+            isLoggedIn: false,
+            email: '',
+            password: '',
+            confirmPassword: ''
         };
+        this.login = this.login.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.sinscrire = this.sinscrire.bind(this);
     }
-
-    sinscrire = () => {
+    handleChange= (e) =>  {
+        this.setState({ [e.target.name]: e.target.value });
+      }
+   
+    sinscrire = (e) => {
         this.setState({
             isLoggedIn: true
         });
-    }
+        const { password, confirmPassword } = this.state;
+       if (password !== confirmPassword) {
+         alert("Mots de passe différents");
+        } else {
+            e.preventDefault();
+            base.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
+            }).then((u)=>{console.log(u)})
+            .catch((error) => {
+                console.log(error);
+            })
+        }
+        
+        }
 
-    login = () => {
+    login = (e) => {
         this.setState({
             goPageLogin: true
         });
@@ -104,19 +126,24 @@ class Inscription extends Component {
                                             autoComplete="email"
                                             margin="normal"
                                             variant="outlined"
+                                            value={this.state.email}
+                                        onChange={this.handleChange}
                                         />
                                     </FormControl>
                                     <FormControl margin="normal" required fullWidth>
                                         <TextField
-                                            id="outlined-password-input"
-                                            label="Mot de passe"
-                                            className={classes.textField}
-                                            style={{ margin: 8 }}
-                                            type="password"
-                                            autoComplete="current-password"
-                                            fullWidth
-                                            margin="normal"
-                                            variant="outlined"
+                                                id="outlined-password-input"
+                                                label="Mot de passe"
+                                                className={classes.textField}
+                                                type="password"
+                                                style={{ margin: 8 }}
+                                                name="password"
+                                                fullWidth
+                                                autoComplete="current-password"
+                                                margin="normal"
+                                                variant="outlined"
+                                                value={this.state.password}
+                                                onChange={this.handleChange}
                                         />
                                     </FormControl>
                                     <FormControl margin="normal" required fullWidth>
@@ -130,6 +157,9 @@ class Inscription extends Component {
                                             fullWidth
                                             margin="normal"
                                             variant="outlined"
+                                            name="confirmPassword"
+                                            value={this.state.confirmPassword}
+                                            onChange={this.handleChange}
                                         />
                                     </FormControl>
 
