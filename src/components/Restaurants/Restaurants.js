@@ -124,7 +124,7 @@ class Restaurants extends Component {
       <TextField
         id="outlined-full-width"
         label="Recherche"
-        style={{ margin: 20, width: 500 }}
+        style={{ margin: 85, width: 500 }}
         placeholder="Taper (ex: Aquacine)"
         fullWidth
         margin="normal"
