@@ -11,6 +11,10 @@ import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import Grid from '@material-ui/core/Grid';
 
+import ReactLoading from "react-loading";
+
+import { Article } from "../loading/Generic";
+
 import Fab from '@material-ui/core/Fab';
 import { Redirect } from "react-router-dom";
 import base from '../../base';
@@ -56,37 +60,69 @@ class Login extends Component {
         this.state = {
             goInscription: false,
             isLoggedIn: false,
+            lsLogginIn: false,
             email: '',
-            password: ''
+            password: '',
         };
         this.login = this.login.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.sinscrire = this.sinscrire.bind(this);
     }
-    handleChange= (e) =>  {
+
+    handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
-      }
-    sinscrire = (e) => {
+    }
+    sinscrire = () => {
         this.setState({
             goInscription: true
         });
     }
 
     login = (e) => {
-       /* this.setState({
-            isLoggedIn: true
-        });*/
-        e.preventDefault();
-        base.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
-        }).catch((error) => {
-            console.log(error);
+        this.setState({
+            lsLogginIn: true
         });
 
-    }
+        base.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((u) => {
 
+            this.setState({
+                isLoggedIn: true
+            });
+
+            sessionStorage.setItem("_uid", u.uid);
+            sessionStorage.setItem("email", u.email);
+
+        }).catch((error) => {
+            this.setState({
+                lsLogginIn: false
+            });
+
+            switch (error.code) {
+                case ("auth/invalid-email"):
+                    // this.setState({
+                    //     exception: "Taper une adresse valide"
+                    // });
+                    break;
+                default:
+            }
+
+            alert("authentification échoué");
+        });
+        e.preventDefault();
+    }
     renderRedirect = () => {
         if (this.state.isLoggedIn) {
             return <Redirect to='/restaurants' />
+        }
+    }
+
+
+
+    renderLoading = () => {
+        if (this.state.lsLogginIn) {
+            return <Article key={'bars'}>
+                <ReactLoading type={'bars'} color="#4E5340" />
+            </Article>;
         }
     }
 
@@ -107,8 +143,11 @@ class Login extends Component {
                             </Avatar>
                             <Typography component="h1" variant="h5">
                                 Authentification
-                                </Typography>
-                            <form className={classes.form}>
+                            </Typography>
+
+                            {this.renderLoading()}
+
+                            <form className={classes.form} noValidate autoComplete="off" onSubmit={this.login}>
                                 <FormControl margin="normal" required fullWidth>
                                     <TextField
                                         id="outlined-email-input"
@@ -124,6 +163,7 @@ class Login extends Component {
                                         variant="outlined"
                                         value={this.state.email}
                                         onChange={this.handleChange}
+                                        required
                                     />
                                 </FormControl>
                                 <FormControl margin="normal" required fullWidth>
@@ -140,6 +180,7 @@ class Login extends Component {
                                         variant="outlined"
                                         value={this.state.password}
                                         onChange={this.handleChange}
+                                        required
                                     />
                                 </FormControl>
                                 {/* <FormControlLabel
@@ -147,12 +188,12 @@ class Login extends Component {
                                             label="Remember me"
                                         /> */}
                                 <Grid className={classes.submit}>
-                                    <Fab size="large" onClick={this.login} variant="extended" color="primary">
+                                    <Fab size="large" variant="extended" type="submit" color="primary">
                                         Se connecter
                                             </Fab>
                                     <Button variant="text" onClick={this.sinscrire} color="primary">
                                         S'inscrire
-                                            </Button>
+                                    </Button>
                                 </Grid>
                             </form>
                         </Paper>

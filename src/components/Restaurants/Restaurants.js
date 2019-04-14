@@ -4,6 +4,7 @@ import { withStyles } from '@material-ui/core/styles';
 import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import ListSubheader from '@material-ui/core/ListSubheader';
+import TextField from '@material-ui/core/TextField';
 
 import Typography from '@material-ui/core/Typography';
 
@@ -21,13 +22,9 @@ const styles = theme => ({
     flexWrap: 'wrap',
     justifyContent: 'center',
     overflow: 'hidden',
-    backgroundColor: theme.palette.background.paper,
-    marginLeft: 60,
   },
   gridList: {
-    // justifyContent: 'center',
-    // width: 2000,
-    // height: 450,
+    justifyContent: 'center',
   },
 });
 
@@ -38,10 +35,10 @@ class Restaurants extends Component {
     // déclarer un état...
     this.state = {
       restaurants: {
-        'restaurants-0': {},
       },
       goToDetail: false,
-      key : ""
+      key: "",
+      search: ""
     };
 
   }
@@ -54,12 +51,9 @@ class Restaurants extends Component {
   }
 
   isGoingToDetail = () => {
-    
+
     if (this.state.goToDetail) {
-      // this.handleDrawerClose();
-
-      let redirect = "/restaurants/"+this.state.key.split('-')[1];
-
+      let redirect = "/restaurants/" + this.state.key;
       return <Redirect to={redirect} />
     }
   }
@@ -72,8 +66,12 @@ class Restaurants extends Component {
     });
   }
 
+  filterResto = (event) => {
+    this.setState({ search: event.target.value.substr(0, 20) });
+  }
+
   componentWillMount() {
-    
+
     this.ref = base.syncState("restaurants", {
       context: this,
       state: "restaurants"
@@ -88,13 +86,23 @@ class Restaurants extends Component {
   // méthodes
   render() {
     const { classes } = this.props;
+    const { restaurants } = this.state;
 
-    let restaurants = Object.keys(this.state.restaurants).map((key, index) => {
-      let el = this.state.restaurants[key];
+    let restoFiltered = Object.keys(restaurants).map((key, index) => {
+      return (
+        restaurants[key]
+      )
+    }).filter((restoTab) => {
+      return restoTab.nom.toLowerCase().search(this.state.search.toLowerCase()) !== -1;
+    });
+
+    let restaurants_v = Object.keys(restoFiltered).map((key, index) => {
+      let el = restoFiltered[key];
+
       return (
         <Restaurant
           key={key}
-          cle={key}
+          cle={el._id}
           nom={el.nom}
           description={el.description}
           photo={el.photo}
@@ -111,18 +119,32 @@ class Restaurants extends Component {
       {this.isGoingToDetail()}
       <Typography variant="h2" gutterBottom align="center">
         Nos Restaurants
-        </Typography>
+      </Typography>
+
+      <TextField
+        id="outlined-full-width"
+        label="Recherche"
+        style={{ margin: 20, width: 500 }}
+        placeholder="Taper (ex: Aquacine)"
+        fullWidth
+        margin="normal"
+        variant="outlined"
+        onChange={this.filterResto}
+        value={this.state.search}
+        InputLabelProps={{
+          shrink: true,
+        }}
+         />
+
       <div className={classes.root}>
         <GridList className={classes.gridList} cols={5}>
           <GridListTile key="Subheader" cols={5} style={{ height: 'auto' }}>
             <ListSubheader component="div"></ListSubheader>
           </GridListTile>
-          {restaurants}
+          {restaurants_v}
         </GridList>
       </div>
-    </div>;
-
-
+    </div >;
     return (
       <MyDrawer main={main} />
     );

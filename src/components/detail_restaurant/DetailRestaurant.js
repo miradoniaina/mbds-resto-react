@@ -264,7 +264,6 @@ class DetailRestaurant extends Component {
                                     <TableCell colSpan={2}>Total</TableCell>
                                     <TableCell align="right">
                                         {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'MGA' }).format(ccyFormat(subtotal(this.state.macommande)))}
-
                                     </TableCell>
                                 </TableRow>
                             </TableBody>
@@ -302,7 +301,7 @@ class DetailRestaurant extends Component {
                 <Grid item xs={4}
                 >
                     <div className="left">
-                        <Typography variant="h1" gutterBottom align="center">
+                        <Typography variant="h2" gutterBottom align="center">
                             {this.state.restaurant.nom}
                         </Typography>
                         <Typography variant="title" gutterBottom align="center">
@@ -342,7 +341,7 @@ class DetailRestaurant extends Component {
                                     onClick={this.showMenuCarte}
                                 >
                                     Menu&Carte
-                                    </Button>
+                                </Button>
                             </Grid>
                         </Grid>
 

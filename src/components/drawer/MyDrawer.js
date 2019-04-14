@@ -21,6 +21,9 @@ import MailIcon from '@material-ui/icons/Mail';
 import HomeRounded from '@material-ui/icons/HomeRounded';
 import Logout from '@material-ui/icons/AccessibilityOutlined';
 import { Redirect } from "react-router-dom";
+import Grid from '@material-ui/core/Grid';
+
+import base from '../../base';
 
 const drawerWidth = 240;
 
@@ -72,6 +75,7 @@ const styles = theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     marginRight: -drawerWidth,
+    marginTop: 45,
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -91,25 +95,35 @@ class PersistentDrawerRight extends React.Component {
 
   accueil = () => {
     this.setState({
-      goHome:true
+      goHome: true
     });
     this.handleDrawerClose();
   }
 
   goingHome = () => {
-    if(this.state.goHome){
+    if (this.state.goHome) {
       return <Redirect to='/restaurants' />
     }
   }
 
   deconnexion = () => {
+    
+    base.auth().signOut();
+    // Remove saved data from sessionStorage
+    sessionStorage.removeItem('_uid');
+    sessionStorage.removeItem('email');
+
+    // Remove all saved data from sessionStorage
+    sessionStorage.clear();
+
     this.setState({
-      deconnected:true
+      deconnected: true
     });
   }
 
+
   isDeconnected = () => {
-    if(this.state.deconnected){
+    if (this.state.deconnected) {
       return <Redirect to='/' />
     }
   }
@@ -137,6 +151,9 @@ class PersistentDrawerRight extends React.Component {
             [classes.appBarShift]: open,
           })}
         >
+
+
+
           <Toolbar disableGutters={!open}>
             <IconButton
               color="inherit"
@@ -146,9 +163,20 @@ class PersistentDrawerRight extends React.Component {
             >
               <MenuIcon />
             </IconButton>
-            <Typography variant="h6" color="inherit" noWrap>
-              MBDS Restaurants
-            </Typography>
+
+            <Grid container spacing={24}
+            >
+              <Grid
+                item xs={12}
+              >
+                <Typography variant="h3" color="inherit" noWrap>
+                  MBDS Restaurants
+                </Typography>
+                <Typography variant="h6" color="inherit" noWrap>
+                  Bonjour ({sessionStorage.getItem("email")})
+                </Typography>
+              </Grid>
+            </Grid>
           </Toolbar>
         </AppBar>
 
@@ -192,7 +220,7 @@ class PersistentDrawerRight extends React.Component {
           <Divider />
           <List>
             <ListItem button onClick={this.deconnexion} key={"Deconnexion"}>
-              <ListItemIcon><Logout/></ListItemIcon>
+              <ListItemIcon><Logout /></ListItemIcon>
               <ListItemText primary={"Deconnexion"} />
             </ListItem>
 

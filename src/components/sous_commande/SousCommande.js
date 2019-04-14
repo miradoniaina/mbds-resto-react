@@ -49,48 +49,50 @@ class SousCommandes extends Component {
     render() {
         const { sous_commandes, classes } = this.props;
         return (
-            <TableRow>
-                <TableCell>
-                    {sous_commandes.nom}
-                </TableCell>
-                <TableCell align="right">
-                    <Select
-                        value={this.state.qte}
-                        onChange={this.handleChange}
-                        input={
-                            <OutlinedInput
-                                labelWidth={0}
-                                name="qte"
-                                id="outlined-age-simple"
-                            />
-                        }
-                    >
-                        <MenuItem value={1}>1</MenuItem>
-                        <MenuItem value={2}>2</MenuItem>
-                        <MenuItem value={3}>3</MenuItem>
-                        <MenuItem value={4}>4</MenuItem>
-                        <MenuItem value={5}>5</MenuItem>
-                        <MenuItem value={6}>6</MenuItem>
-                        <MenuItem value={7}>7</MenuItem>
-                        <MenuItem value={8}>8</MenuItem>
-                        <MenuItem value={9}>9</MenuItem>
-                        <MenuItem value={10}>10</MenuItem>
-                    </Select>
-                </TableCell>
-                <TableCell align="right">
-                    {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'MGA' }).format(ccyFormat(sous_commandes.prix) * this.state.qte)}
-                </TableCell>
-                &nbsp;&nbsp;
+            <React.Fragment>
+                <TableRow>
+                    <TableCell>
+                        {sous_commandes.nom}
+                    </TableCell>
+                    <TableCell align="right">
+                        <Select
+                            value={this.state.qte}
+                            onChange={this.handleChange}
+                            input={
+                                <OutlinedInput
+                                    labelWidth={0}
+                                    name="qte"
+                                    id="outlined-age-simple"
+                                />
+                            }
+                        >
+                            <MenuItem value={1}>1</MenuItem>
+                            <MenuItem value={2}>2</MenuItem>
+                            <MenuItem value={3}>3</MenuItem>
+                            <MenuItem value={4}>4</MenuItem>
+                            <MenuItem value={5}>5</MenuItem>
+                            <MenuItem value={6}>6</MenuItem>
+                            <MenuItem value={7}>7</MenuItem>
+                            <MenuItem value={8}>8</MenuItem>
+                            <MenuItem value={9}>9</MenuItem>
+                            <MenuItem value={10}>10</MenuItem>
+                        </Select>
+                    </TableCell>
+                    <TableCell align="right">
+                        {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'MGA' }).format(ccyFormat(sous_commandes.prix) * this.state.qte)}
+                    </TableCell>
+                    <TableCell align="left">
                         <Fab
-                        aria-label="Delete"
-                        color="secondary"
-                        className={classes.fab}
-                        onClick={() => this.props.supprimerCommande(sous_commandes)}
-                    >
-                        <DeleteIcon />
-                    </Fab>
-            </TableRow>
-
+                            aria-label="Delete"
+                            color="secondary"
+                            className={classes.fab}
+                            onClick={() => this.props.supprimerCommande(sous_commandes)}
+                        >
+                            <DeleteIcon />
+                        </Fab>
+                    </TableCell>
+                </TableRow>
+            </React.Fragment>
         );
     }
 }

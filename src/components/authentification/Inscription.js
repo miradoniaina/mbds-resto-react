@@ -11,6 +11,10 @@ import Paper from '@material-ui/core/Paper';
 import FormControl from '@material-ui/core/FormControl';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import { Redirect } from "react-router-dom";
+
+import { Article } from "../loading/Generic";
+import ReactLoading from "react-loading";
+
 import base from '../../base';
 
 
@@ -56,6 +60,7 @@ class Inscription extends Component {
         this.state = {
             goPageLogin: false,
             isLoggedIn: false,
+            isSignin: false,
             email: '',
             password: '',
             confirmPassword: ''
@@ -64,27 +69,42 @@ class Inscription extends Component {
         this.handleChange = this.handleChange.bind(this);
         this.sinscrire = this.sinscrire.bind(this);
     }
-    handleChange= (e) =>  {
+    handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
-      }
-   
-    sinscrire = (e) => {
-        this.setState({
-            isLoggedIn: true
-        });
+    }
+
+    sinscrire = () => {
         const { password, confirmPassword } = this.state;
-       if (password !== confirmPassword) {
-         alert("Mots de passe différents");
+
+        this.setState({
+            isSignin: true
+        });
+
+        if (password !== confirmPassword) {
+            this.setState({
+                isSignin: false
+            });
+            alert("Mots de passe différents");
         } else {
-            e.preventDefault();
-            base.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((u)=>{
-            }).then((u)=>{console.log(u)})
-            .catch((error) => {
-                console.log(error);
-            })
+            base.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((u) => {
+
+                this.setState({
+                    isLoggedIn: true
+                });
+
+                sessionStorage.setItem("_uid", u.uid);
+                sessionStorage.setItem("email", u.email);
+
+            }).then((u) => { console.log(u) })
+                .catch((error) => {
+                    this.setState({
+                        isSignin: false
+                    });
+                    alert(error.message);
+                    console.log(error);
+                })
         }
-        
-        }
+    }
 
     login = (e) => {
         this.setState({
@@ -95,6 +115,14 @@ class Inscription extends Component {
     renderRedirect = () => {
         if (this.state.isLoggedIn) {
             return <Redirect to='/restaurants' />
+        }
+    }
+
+    renderLoading = () => {
+        if (this.state.isSignin) {
+            return <Article key={'bars'}>
+                <ReactLoading type={'bars'} color="#4E5340" />
+            </Article>;
         }
     }
 
@@ -112,6 +140,9 @@ class Inscription extends Component {
                                 <Typography component="h1" variant="h5">
                                     Inscription
                                 </Typography>
+
+                                {this.renderLoading()}
+
                                 <form className={classes.form}>
                                     <FormControl margin="normal" required fullWidth>
                                         <TextField
@@ -127,23 +158,23 @@ class Inscription extends Component {
                                             margin="normal"
                                             variant="outlined"
                                             value={this.state.email}
-                                        onChange={this.handleChange}
+                                            onChange={this.handleChange}
                                         />
                                     </FormControl>
                                     <FormControl margin="normal" required fullWidth>
                                         <TextField
-                                                id="outlined-password-input"
-                                                label="Mot de passe"
-                                                className={classes.textField}
-                                                type="password"
-                                                style={{ margin: 8 }}
-                                                name="password"
-                                                fullWidth
-                                                autoComplete="current-password"
-                                                margin="normal"
-                                                variant="outlined"
-                                                value={this.state.password}
-                                                onChange={this.handleChange}
+                                            id="outlined-password-input"
+                                            label="Mot de passe"
+                                            className={classes.textField}
+                                            type="password"
+                                            style={{ margin: 8 }}
+                                            name="password"
+                                            fullWidth
+                                            autoComplete="current-password"
+                                            margin="normal"
+                                            variant="outlined"
+                                            value={this.state.password}
+                                            onChange={this.handleChange}
                                         />
                                     </FormControl>
                                     <FormControl margin="normal" required fullWidth>

@@ -12,7 +12,7 @@ class RestoMap extends Component {
     render() {
       const position = [this.props.latitude, this.props.longitude];
       return (
-        <Map style={{height: '900px',width: '90%'}} center={position} zoom={13}>
+        <Map style={{height: '600px',width: '90%'}} center={position} zoom={13}>
           <TileLayer
              url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
           />
