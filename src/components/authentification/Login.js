@@ -50,6 +50,11 @@ const styles = theme => ({
     submit: {
         marginTop: theme.spacing.unit * 3,
     },
+    error: {
+        margin: 8,
+        textAlign: "center",
+        color: "red",
+    }
 });
 
 
@@ -63,6 +68,7 @@ class Login extends Component {
             lsLogginIn: false,
             email: '',
             password: '',
+            errors: {}
         };
         this.login = this.login.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -78,37 +84,55 @@ class Login extends Component {
         });
     }
 
-    login = (e) => {
+    validateForm() {
+        const {
+            email,
+        } = this.state;
+        let errors = {};
+        let formIsValid = true;
+        if (email === '') {
+            formIsValid = false;
+            errors["email"] = "Veuillez vérifier l'adresse mail";
+        }
+        var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+        if (!pattern.test(email)) {
+            formIsValid = false;
+            errors["email"] = "Adresse mail non valide";
+        }
+
         this.setState({
-            lsLogginIn: true
+            errors: errors
         });
+        return formIsValid;
+    }
 
-        base.auth().signInWithEmailAndPassword(this.state.email, this.state.password).then((u) => {
-
-            this.setState({
-                isLoggedIn: true
-            });
-
-            sessionStorage.setItem("_uid", u.uid);
-            sessionStorage.setItem("email", u.email);
-
-        }).catch((error) => {
-            this.setState({
-                lsLogginIn: false
-            });
-
-            switch (error.code) {
-                case ("auth/invalid-email"):
-                    // this.setState({
-                    //     exception: "Taper une adresse valide"
-                    // });
-                    break;
-                default:
-            }
-
-            alert("authentification échoué");
-        });
+    login = (e) => {
         e.preventDefault();
+        const {email, password} = this.state;
+
+        if (this.validateForm() === true) {
+            this.setState({
+                lsLogginIn: true
+            });
+
+            base.auth().signInWithEmailAndPassword(email, password).then((u) => {
+
+                this.setState({
+                    isLoggedIn: true
+                });
+
+                sessionStorage.setItem("_uid", u.uid);
+                sessionStorage.setItem("email", u.email);
+
+            }).catch((error) => {
+                console.log(error);
+                this.setState({
+                    lsLogginIn: false
+                });
+
+                alert("authentification échoué");
+            });
+        }
     }
     renderRedirect = () => {
         if (this.state.isLoggedIn) {
@@ -165,6 +189,11 @@ class Login extends Component {
                                         onChange={this.handleChange}
                                         required
                                     />
+                                    <div
+                                        className={classes.error}
+                                    >
+                                        <span>{this.state.errors.email}</span>
+                                    </div>
                                 </FormControl>
                                 <FormControl margin="normal" required fullWidth>
                                     <TextField
