@@ -117,10 +117,8 @@ class Plat extends Component {
                             className={classes.media}
                             image={Url.imageUrl + "plats/" + plat.photo}
                             title="Paella dish"
-                        // onClick={this.onClickPlat}
                         />
                         <CardContent
-                        //   onClick={this.onClickPlat}
                         >
                             <Typography component="p">
                                 {plat.description}

@@ -48,6 +48,11 @@ const styles = theme => ({
     submit: {
         marginTop: theme.spacing.unit * 3,
     },
+    error: {
+        margin: 8,
+        textAlign: "center",
+        color: "red",
+    }
 });
 
 
@@ -63,46 +68,75 @@ class Inscription extends Component {
             isSignin: false,
             email: '',
             password: '',
-            confirmPassword: ''
+            confirmPassword: '',
+            errors: {}
         };
         this.login = this.login.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.sinscrire = this.sinscrire.bind(this);
     }
+
     handleChange = (e) => {
         this.setState({ [e.target.name]: e.target.value });
     }
 
-    sinscrire = () => {
-        const { password, confirmPassword } = this.state;
+
+    validateForm() {
+        const {
+            email,
+            password,
+            confirmPassword
+        } = this.state;
+        let errors = {};
+        let formIsValid = true;
+        if (password !== confirmPassword) {
+            formIsValid = false;
+            errors["confirmPassword"] = "Les mot de passes ne correspondent pas";
+        }
+        if (password === '' || password.length < 6) {
+            formIsValid = false;
+            errors["password"] = "Mot de passe trop faible (Minimum 6 caractères)";
+        }
+        if (email === '') {
+            formIsValid = false;
+            errors["email"] = "Adresse mail non valide";
+        }
+        var pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+        if (!pattern.test(email)) {
+            formIsValid = false;
+            errors["email"] = "Adresse mail non valide";
+        }
 
         this.setState({
-            isSignin: true
+            errors: errors
         });
+        return formIsValid;
+    }
 
-        if (password !== confirmPassword) {
+    sinscrire = (e) => {
+        e.preventDefault();
+
+        if (this.validateForm() === true) {
             this.setState({
-                isSignin: false
+                isSignin: true
             });
-            alert("Mots de passe différents");
-        } else {
             base.auth().createUserWithEmailAndPassword(this.state.email, this.state.password).then((u) => {
 
                 this.setState({
-                    isLoggedIn: true
+                    isLoggedIn: true,
+                    isSignin: false
                 });
 
                 sessionStorage.setItem("_uid", u.uid);
                 sessionStorage.setItem("email", u.email);
 
-            }).then((u) => { console.log(u) })
-                .catch((error) => {
-                    this.setState({
-                        isSignin: false
-                    });
-                    alert(error.message);
-                    console.log(error);
-                })
+            }).catch((error) => {
+                this.setState({
+                    isSignin: false
+                });
+                alert(error.message);
+                console.log(error);
+            })
         }
     }
 
@@ -143,7 +177,7 @@ class Inscription extends Component {
 
                                 {this.renderLoading()}
 
-                                <form className={classes.form}>
+                                <form onSubmit={this.sinscrire} className={classes.form}>
                                     <FormControl margin="normal" required fullWidth>
                                         <TextField
                                             id="outlined-email-input"
@@ -160,6 +194,12 @@ class Inscription extends Component {
                                             value={this.state.email}
                                             onChange={this.handleChange}
                                         />
+                                        <div
+                                            className={classes.error}
+                                        >
+                                            <span>{this.state.errors.email}</span>
+                                        </div>
+
                                     </FormControl>
                                     <FormControl margin="normal" required fullWidth>
                                         <TextField
@@ -176,6 +216,12 @@ class Inscription extends Component {
                                             value={this.state.password}
                                             onChange={this.handleChange}
                                         />
+                                        <div
+                                            className={classes.error}
+                                        >
+                                            <span>{this.state.errors.password}</span>
+                                        </div>
+
                                     </FormControl>
                                     <FormControl margin="normal" required fullWidth>
                                         <TextField
@@ -192,10 +238,15 @@ class Inscription extends Component {
                                             value={this.state.confirmPassword}
                                             onChange={this.handleChange}
                                         />
+                                        <div
+                                            className={classes.error}
+                                        >
+                                            <span>{this.state.errors.confirmPassword}</span>
+                                        </div>
                                     </FormControl>
 
                                     <Grid className={classes.submit}>
-                                        <Fab size="large" onClick={this.sinscrire} variant="extended" color="secondary">
+                                        <Fab size="large" type="submit" variant="extended" color="secondary">
                                             S'inscrire
                                         </Fab>
                                         <Button onClick={this.login} variant="text" color="primary">
