@@ -14,7 +14,7 @@ class RestoMap extends Component {
       return (
         <Map style={{height: '600px',width: '90%'}} center={position} zoom={13}>
           <TileLayer
-             url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"
+             url="http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
         <Marker icon={customMarker} position={position}>
             <Popup>

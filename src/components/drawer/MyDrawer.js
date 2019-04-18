@@ -94,9 +94,12 @@ class PersistentDrawerRight extends React.Component {
   };
 
   accueil = () => {
-    this.setState({
-      goHome: true
-    });
+    const url= window.location.pathname;
+    if (url!=="/restaurants"){
+      this.setState({  
+        goHome:true
+      });
+    }
     this.handleDrawerClose();
   }
 
