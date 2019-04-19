@@ -67,7 +67,7 @@ class Restaurants extends Component {
   }
 
   filterResto = (event) => {
-    this.setState({ search: event.target.value.substr(0, 20) });
+    this.setState({ search: event.target.value });
   }
 
   componentWillMount() {
