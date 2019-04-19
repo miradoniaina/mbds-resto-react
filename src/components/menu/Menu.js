@@ -64,7 +64,7 @@ class Menu extends Component {
 
     // méthodes
     render() {
-        const { classes, plats } = this.props;
+        const { classes, plats, menu } = this.props;
 
         let plats_v = Object.keys(plats).map((key, index) => {
             let el = plats[key];
@@ -97,7 +97,7 @@ class Menu extends Component {
                                     gutterBottom
                                     align="center"
                                 >
-                                    {this.props.menu}
+                                    {menu.nom_menu}
                                 </Typography>
                                 <hr />
                             </Grid>
@@ -135,9 +135,9 @@ class Menu extends Component {
                                     <MenuItem value={10}>10</MenuItem>
                                 </Select>
                             </FormControl>
-                            <Button variant="contained" fullWidth color="primary" className={classes.button}>
+                            <Button variant="contained" fullWidth color="primary" className={classes.button} onClick={() => this.props.ajouterCommandeMenu(menu, this.state.qte)}>
                                 Ajouter au panier
-                                </Button>
+                            </Button>
                         </form>
                     </div>
                 </div>

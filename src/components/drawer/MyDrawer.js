@@ -19,7 +19,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import HomeRounded from '@material-ui/icons/HomeRounded';
-import Logout from '@material-ui/icons/AccessibilityOutlined';
+
+import Logout from '@material-ui/icons/AccountCircle';
+
 import { Redirect } from "react-router-dom";
 import Grid from '@material-ui/core/Grid';
 

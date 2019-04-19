@@ -5,7 +5,9 @@ import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+
+import LockOutlinedIcon from '@material-ui/icons/LockRounded';
+
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
@@ -41,7 +43,7 @@ const styles = theme => ({
     },
     avatar: {
         margin: theme.spacing.unit,
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: "#95A3A4",
     },
     form: {
         width: '100%', // Fix IE 11 issue.
@@ -49,6 +51,7 @@ const styles = theme => ({
     },
     submit: {
         marginTop: theme.spacing.unit * 3,
+        marginLeft: 10,
     },
     error: {
         margin: 8,

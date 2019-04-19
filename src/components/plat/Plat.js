@@ -15,11 +15,9 @@ import MoreVertIcon from '@material-ui/icons/MoreVert';
 import red from '@material-ui/core/colors/red';
 
 import FormControl from '@material-ui/core/FormControl';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import OutlinedInput from '@material-ui/core/OutlinedInput';
 import MenuItem from '@material-ui/core/MenuItem';
 import CardActionArea from '@material-ui/core/CardActionArea';
+import TextField from '@material-ui/core/TextField';
 
 
 import Url from "../../Url";
@@ -28,6 +26,9 @@ import './Plat.css';
 
 
 const styles = theme => ({
+    root: {
+        flexGrow: 1,
+    },
     card: {
         maxWidth: 400,
     },
@@ -59,6 +60,11 @@ const styles = theme => ({
         padding: theme.spacing.unit * 4,
         outline: 'none',
     },
+    bullet: {
+        display: 'inline-block',
+        margin: '0 2px',
+        transform: 'scale(0.8)',
+    },
 });
 
 
@@ -74,32 +80,15 @@ class Plat extends Component {
         };
     }
 
-    onClickPlat = () => {
-        // ReactDOM.render(<DetailRestaurant />, document.getElementById('main'));
-    }
-
-    handleChange = event => {
-        this.setState({ [event.target.name]: event.target.value });
+    handleChange = name => event => {
+        this.setState({ [name]: event.target.value });
     };
-
-    componentWillMount() {
-        // this.setState({
-        //     labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
-        //   });
-        // this.ref = base.syncState("restaurants", {
-        //   context: this,
-        //   state: "restaurants"
-        // });
-    }
-
-    componentWillUnmount() {
-        // base.removeBinding(this.ref);
-    }
 
     // méthodes
     render() {
 
         const { classes, plat } = this.props;
+        const bull = <span className={classes.bullet}>•</span>;
         return (
             <div>
                 <Card className={classes.card}>
@@ -123,44 +112,45 @@ class Plat extends Component {
                             <Typography component="p">
                                 {plat.description}
                             </Typography>
+                            <br />
+                            <Typography
+                                variant="h5" component="h2"
+                                align="center"
+                            >
+                                {bull}{new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'MGA' }).format(plat.prix)}{bull}
+                            </Typography>
+                            <br />
                         </CardContent>
-
                     </CardActionArea>
+
 
                     <CardActions
                         className={classes.actions}
                         disableActionSpacing
                     >
-                        <IconButton 
+                        <IconButton
                             color="primary"
                             aria-label="Add to favorites"
-                            onClick = {() => this.props.ajouterCommande(plat, this.state.qte)}  
-                            >
+                            onClick={() => this.props.ajouterCommande(plat, this.state.qte)}
+                        >
                             <AddShoppingCart />
                         </IconButton>
-                        {/* <IconButton aria-label="Share">
-                            <ShareIcon />
-                        </IconButton> */}
 
                         <FormControl variant="outlined" className={classes.formControl}>
-                            <InputLabel
-                                ref={ref => {
-                                    this.InputLabelRef = ref;
-                                }}
-                                htmlFor="outlined-age-simple"
-                            >
-                                Qte
-                              </InputLabel>
-                            <Select
+                            <TextField
+                                id="standard-select-currency"
+                                select
+                                label="Quantité(s)"
+                                className={classes.textField}
                                 value={this.state.qte}
-                                onChange={this.handleChange}
-                                input={
-                                    <OutlinedInput
-                                        labelWidth={this.state.labelWidth}
-                                        name="qte"
-                                        id="outlined-age-simple"
-                                    />
-                                }
+                                onChange={this.handleChange('qte')}
+                                SelectProps={{
+                                    MenuProps: {
+                                        className: classes.menu,
+                                    },
+                                }}
+                                helperText="Choisissez la quantité à acheter"
+                                margin="normal"
                             >
                                 <MenuItem value={1}>1</MenuItem>
                                 <MenuItem value={2}>2</MenuItem>
@@ -172,16 +162,8 @@ class Plat extends Component {
                                 <MenuItem value={8}>8</MenuItem>
                                 <MenuItem value={9}>9</MenuItem>
                                 <MenuItem value={10}>10</MenuItem>
-                            </Select>
+                            </TextField>
                         </FormControl>
-
-                        <Typography
-                            component="title"
-                            id="prix"
-                        >
-                            {new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'MGA' }).format(plat.prix)}
-
-                        </Typography>
                     </CardActions>
                 </Card>
             </div>
