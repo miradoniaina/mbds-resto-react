@@ -47,6 +47,7 @@ const styles = theme => ({
     },
     submit: {
         marginTop: theme.spacing.unit * 3,
+        marginLeft: 10,
     },
     error: {
         margin: 8,

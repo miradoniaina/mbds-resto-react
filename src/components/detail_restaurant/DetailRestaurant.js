@@ -29,9 +29,6 @@ import RestoMap from '../../components/map/RestoMap';
 import SousCommande from '../sous_commande/SousCommande';
 
 
-
-// const TAX_RATE = 0.07;
-
 const styles = theme => ({
     root: {
         flexGrow: 1,
@@ -74,22 +71,13 @@ function subtotal(items) {
     return items.map(({ prix, qte }) => prix * qte).reduce((sum, i) => sum + i, 0);
 }
 
+
 function lowerCase(str) {
     return (str + "").toLowerCase();
 }
 
-function isIn(commandes, oldElements) {
-    for (let i = 0; i < oldElements.length; i++) {
-        if (commandes._id === oldElements[i].cle) {
-            return true
-        }
-    }
-    return false;
-}
 
 class DetailRestaurant extends Component {
-
-
     constructor(props) {
         super(props);
         // déclarer un état...
@@ -113,6 +101,7 @@ class DetailRestaurant extends Component {
             context: this,
             state: "detail_restaurant"
         });
+
     }
 
     componentWillUnmount() {
@@ -145,15 +134,25 @@ class DetailRestaurant extends Component {
         this.setState({ macommande: commandeupdt });
     }
 
+    isIn(commandes, oldElements) {
+        for (let i = 0; i < oldElements.length; i++) {
+            if (commandes._id === oldElements[i]._id) {
+                return true
+            }
+        }
+        return false;
+    }
+
     ajouterCommande(commandes, quantite) {
         const oldElements = this.state.macommande;
 
-        if (isIn(commandes, oldElements)) {
+        if (this.isIn(commandes, oldElements)) {
+            alert("Vous l'avez déjà dans votre commande.");
             return;
         }
 
         const newCommande = {
-            cle: commandes._id,
+            _id: commandes._id,
             nom: commandes.nom,
             qte: quantite,
             prix: commandes.prix
@@ -167,13 +166,41 @@ class DetailRestaurant extends Component {
     supprimerCommande(commande) {
 
         const newmacommande = this.state.macommande.filter((el, index) => {
-            return (el !== commande) ? el : null;
+            return (el._id !== commande._id) ? el : null;
         });
 
         this.setState({
             macommande: newmacommande
         });
     };
+
+    ajouterCommandeMenu(menu, quantite) {
+        const oldElements = this.state.macommande;
+
+        if((quantite==="")||(this.isIn(menu, oldElements))){
+            alert("Vous l'avez déjà dans votre commande.");
+            return;
+        }   
+
+        let platsO = menu.plats;
+        let prix = 0;
+
+        Object.keys(platsO).map((key, index) => {
+            prix += platsO[key].prix;
+            return prix;
+        });
+
+        const newCommande = {
+            _id: menu._id,
+            nom: menu.nom_menu,
+            qte: quantite,
+            prix: prix
+        }
+
+        this.setState({
+            macommande: oldElements.concat(newCommande), // concat retourne un nouveau tableau, pas de push ici !!!
+        });
+    }
 
     // méthodes
     render() {
@@ -199,11 +226,12 @@ class DetailRestaurant extends Component {
                     let el = menus[key];
                     return (
                         <Menu
-                            menu={el.nom_menu}
+                            menu={el}
                             key={key}
                             cle={key}
                             plats={el.plats}
                             ajouterCommande={this.ajouterCommande.bind(this)}
+                            ajouterCommandeMenu={this.ajouterCommandeMenu.bind(this)}
                         />
                     )
                 });
@@ -235,14 +263,13 @@ class DetailRestaurant extends Component {
                 <React.Fragment>
                     <Typography variant="h2" gutterBottom>
                         Ma commande
-                </Typography>
+                    </Typography>
                     <div id="commande">
                         <Table className={classes.table}>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell>Plat</TableCell>
+                                    <TableCell>Plat ou Menu</TableCell>
                                     <TableCell align="right">Quantité</TableCell>
-                                    {/* <TableCell align="right">@</TableCell> */}
                                     <TableCell align="right">Prix</TableCell>
                                 </TableRow>
                             </TableHead>
@@ -380,7 +407,7 @@ class DetailRestaurant extends Component {
                                         onClick={this.showMap}
                                     >
                                         <LocationSearchingSharp
-                                        
+
                                         />
                                         Voir sur carte
                                     </Button>

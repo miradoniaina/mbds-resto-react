@@ -24,7 +24,7 @@ const styles = theme => ({
     overflow: 'hidden',
   },
   gridList: {
-    justifyContent: 'center',
+    // justifyContent: 'left',
   },
 });
 
@@ -71,11 +71,10 @@ class Restaurants extends Component {
   }
 
   componentWillMount() {
-
     this.ref = base.syncState("restaurants", {
       context: this,
       state: "restaurants"
-    });
+    });    
   }
 
   componentWillUnmount() {
@@ -118,7 +117,7 @@ class Restaurants extends Component {
     let main = <div>
       {this.isGoingToDetail()}
       <Typography variant="h2" gutterBottom align="center">
-        Nos Restaurants
+        Choisissez un restaurant.
       </Typography>
 
       <TextField
@@ -136,7 +135,7 @@ class Restaurants extends Component {
         }}
          />
 
-      <div className={classes.root}>
+      <div className={classes.root} style={{marginLeft: 85}}>
         <GridList className={classes.gridList} cols={5}>
           <GridListTile key="Subheader" cols={5} style={{ height: 'auto' }}>
             <ListSubheader component="div"></ListSubheader>
