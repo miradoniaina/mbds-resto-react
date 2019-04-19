@@ -177,7 +177,7 @@ class DetailRestaurant extends Component {
     ajouterCommandeMenu(menu, quantite) {
         const oldElements = this.state.macommande;
 
-        if((quantite==="")||(this.isIn(menu, oldElements))){
+        if((this.isIn(menu, oldElements))){
             alert("Vous l'avez déjà dans votre commande.");
             return;
         }   

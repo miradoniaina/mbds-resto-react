@@ -42,7 +42,7 @@ class Menu extends Component {
         this.state = {
             expanded: false,
             name: 'hai',
-            qte: ''
+            qte: 1
         };
     }
 
@@ -76,7 +76,7 @@ class Menu extends Component {
                     <Plat
                         cle={key}
                         plat={el}
-                        ajouterCommande = {this.props.ajouterCommande.bind(this.props.ajouterCommande)}
+                        ajouterCommande={this.props.ajouterCommande.bind(this.props.ajouterCommande)}
                     />
                 </Grid>
             )
@@ -120,10 +120,7 @@ class Menu extends Component {
                                         id: 'age-simple',
                                     }}
                                 >
-                                    <MenuItem selected value="0">
-                                        <em></em>
-                                    </MenuItem>
-                                    <MenuItem value={1}>1</MenuItem>
+                                    <MenuItem selected value={1}>1</MenuItem>
                                     <MenuItem value={2}>2</MenuItem>
                                     <MenuItem value={3}>3</MenuItem>
                                     <MenuItem value={4}>4</MenuItem>
