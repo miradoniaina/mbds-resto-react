@@ -21,7 +21,6 @@ import Fab from '@material-ui/core/Fab';
 import { Redirect } from "react-router-dom";
 import base from '../../base';
 
-
 const styles = theme => ({
     main: {
         width: 'auto',
