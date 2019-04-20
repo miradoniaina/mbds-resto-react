@@ -5,6 +5,7 @@ import GridList from '@material-ui/core/GridList';
 import GridListTile from '@material-ui/core/GridListTile';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import TextField from '@material-ui/core/TextField';
+import MenuItem from '@material-ui/core/MenuItem';
 
 import Typography from '@material-ui/core/Typography';
 
@@ -38,7 +39,8 @@ class Restaurants extends Component {
       },
       goToDetail: false,
       key: "",
-      search: ""
+      search: "",
+      searchTypeCuisine: "",
     };
 
   }
@@ -66,15 +68,15 @@ class Restaurants extends Component {
     });
   }
 
-  filterResto = (event) => {
-    this.setState({ search: event.target.value });
-  }
+  handleChange = name => event => {
+    this.setState({ [name]: event.target.value });
+  };
 
   componentWillMount() {
     this.ref = base.syncState("restaurants", {
       context: this,
       state: "restaurants"
-    });    
+    });
   }
 
   componentWillUnmount() {
@@ -92,7 +94,7 @@ class Restaurants extends Component {
         restaurants[key]
       )
     }).filter((restoTab) => {
-      return restoTab.nom.toLowerCase().search(this.state.search.toLowerCase()) !== -1;
+      return ((restoTab.nom.toLowerCase().search(this.state.search.toLowerCase()) !== -1) && (restoTab.type_cuisine.search(this.state.searchTypeCuisine) !== -1));
     });
 
     let restaurants_v = Object.keys(restoFiltered).map((key, index) => {
@@ -120,22 +122,52 @@ class Restaurants extends Component {
         Choisissez un restaurant.
       </Typography>
 
-      <TextField
-        id="outlined-full-width"
-        label="Recherche"
-        style={{ margin: 85, width: 500 }}
-        placeholder="Taper (ex: Aquacine)"
-        fullWidth
-        margin="normal"
-        variant="outlined"
-        onChange={this.filterResto}
-        value={this.state.search}
-        InputLabelProps={{
-          shrink: true,
-        }}
-         />
 
-      <div className={classes.root} style={{marginLeft: 85}}>
+
+      <form className={classes.container} style={{marginLeft: 85}} noValidate autoComplete="off">
+
+        <TextField
+          id="outlined-full-width"
+          label="Recherche"
+          style={{  width: 500 }}
+          className={classes.textField}
+          placeholder="Taper (ex: Aquacine)"
+          fullWidth
+          margin="normal"
+          variant="outlined"
+          onChange={this.handleChange('search')}
+          value={this.state.search}
+          InputLabelProps={{
+            shrink: true,
+          }}
+        />
+
+        <TextField
+          id="standard-select-currency"
+          select
+          label="Type de cuisine"
+          style={{ marginLeft: 20, width: 250 }}
+          value={this.state.searchTypeCuisine}
+          variant="outlined"
+          onChange={this.handleChange('searchTypeCuisine')}
+          SelectProps={{
+            MenuProps: {
+              className: classes.menu,
+            },
+          }}
+          margin="normal"
+        >
+          <MenuItem value={""}></MenuItem>
+          <MenuItem value={"cuisine gastronomique"}>cuisine gastronomique</MenuItem>
+          <MenuItem value={"nouvelle cuisine"}>nouvelle cuisine</MenuItem>
+          <MenuItem value={"cuisine traditionnelle"}>cuisine traditionnelle</MenuItem>
+          <MenuItem value={"cuisine exotique"}>cuisine exotique</MenuItem>
+        </TextField>
+
+      </form>
+
+
+      <div className={classes.root} style={{ marginLeft: 85 }}>
         <GridList className={classes.gridList} cols={5}>
           <GridListTile key="Subheader" cols={5} style={{ height: 'auto' }}>
             <ListSubheader component="div"></ListSubheader>

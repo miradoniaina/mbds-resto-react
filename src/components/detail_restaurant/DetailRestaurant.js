@@ -205,6 +205,12 @@ class DetailRestaurant extends Component {
         });
     }
 
+    validerCommande(){
+        this.setState({
+            macommande: []
+        });
+    }
+
     // méthodes
     render() {
         const { classes } = this.props;
@@ -306,9 +312,10 @@ class DetailRestaurant extends Component {
                                 size="large"
                                 variant="extended"
                                 color="primary"
+                                onClick={() => this.validerCommande()}
                             >
                                 Commander
-                    </Fab>
+                            </Fab>
                         </Grid>
                     </div>
                     <Grid container spacing={24}
