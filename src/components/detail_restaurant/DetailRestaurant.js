@@ -68,7 +68,11 @@ function ccyFormat(num) {
 }
 
 function subtotal(items) {
-    return items.map(({ prix, qte }) => prix * qte).reduce((sum, i) => sum + i, 0);
+    let subtotal = 0;
+    for (let i = 0; i < items.length; i++) {
+        subtotal += (items[i].qte * items[i].prix);
+    }
+    return subtotal;
 }
 
 
@@ -164,9 +168,8 @@ class DetailRestaurant extends Component {
     }
 
     supprimerCommande(commande) {
-
         const newmacommande = this.state.macommande.filter((el, index) => {
-            return (el._id !== commande._id) ? el : null;
+            return (el !== commande) ? el : null;
         });
 
         this.setState({
@@ -177,10 +180,10 @@ class DetailRestaurant extends Component {
     ajouterCommandeMenu(menu, quantite) {
         const oldElements = this.state.macommande;
 
-        if((this.isIn(menu, oldElements))){
+        if ((this.isIn(menu, oldElements))) {
             alert("Vous l'avez déjà dans votre commande.");
             return;
-        }   
+        }
 
         let platsO = menu.plats;
         let prix = 0;
@@ -277,7 +280,7 @@ class DetailRestaurant extends Component {
                                 {
                                     this.state.macommande.map((row, index) => (
                                         <SousCommande
-                                            key={index}
+                                            key={row._id}
                                             index={index}
                                             sous_commandes={row}
                                             modifierQteSousCommande={this.modifierQteSousCommande.bind(this)}
